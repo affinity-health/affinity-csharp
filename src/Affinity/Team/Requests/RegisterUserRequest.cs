@@ -1,0 +1,65 @@
+using Affinity.Core;
+using global::System.Text.Json.Serialization;
+
+namespace Affinity;
+
+[Serializable]
+public record RegisterUserRequest
+{
+    [JsonIgnore]
+    public required string PracticeId { get; set; }
+
+    [JsonIgnore]
+    public required string IdempotencyKey { get; set; }
+
+    [JsonPropertyName("externalId")]
+    public required string ExternalId { get; set; }
+
+    [JsonPropertyName("email")]
+    public required string Email { get; set; }
+
+    [JsonPropertyName("name")]
+    public required string Name { get; set; }
+
+    [JsonPropertyName("role")]
+    public required RegisterUserRequestRole Role { get; set; }
+
+    [JsonPropertyName("roles")]
+    public IEnumerable<RegisterUserRequestRolesItem>? Roles { get; set; }
+
+    [JsonPropertyName("profileDetails")]
+    public RegisterUserRequestProfileDetails? ProfileDetails { get; set; }
+
+    [JsonPropertyName("npi")]
+    public string? Npi { get; set; }
+
+    [JsonPropertyName("licenses")]
+    public IEnumerable<RegisterUserRequestLicensesItem>? Licenses { get; set; }
+
+    [JsonPropertyName("legalName")]
+    public string? LegalName { get; set; }
+
+    [JsonPropertyName("displayName")]
+    public string? DisplayName { get; set; }
+
+    [JsonPropertyName("credentials")]
+    public string? Credentials { get; set; }
+
+    [JsonPropertyName("address")]
+    public RegisterUserRequestAddress? Address { get; set; }
+
+    [JsonPropertyName("phone")]
+    public string? Phone { get; set; }
+
+    [JsonPropertyName("locationIds")]
+    public IEnumerable<string>? LocationIds { get; set; }
+
+    [JsonPropertyName("identityAttestation")]
+    public required bool IdentityAttestation { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
+}

@@ -1,0 +1,44 @@
+using Affinity.Core;
+using global::System.Text.Json;
+using global::System.Text.Json.Serialization;
+
+namespace Affinity;
+
+[Serializable]
+public record ResendPracticeTeamInvitationResponseInvitationPersonAccountPrescriberConnectionProviderAddress
+    : IJsonOnDeserialized
+{
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
+    [JsonPropertyName("line1")]
+    public required string Line1 { get; set; }
+
+    [JsonPropertyName("line2")]
+    public string? Line2 { get; set; }
+
+    [JsonPropertyName("city")]
+    public required string City { get; set; }
+
+    [JsonPropertyName("state")]
+    public required string State { get; set; }
+
+    [JsonPropertyName("postalCode")]
+    public required string PostalCode { get; set; }
+
+    [JsonPropertyName("country")]
+    public required string Country { get; set; }
+
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
+}

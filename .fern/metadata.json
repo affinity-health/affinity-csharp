@@ -1,0 +1,13 @@
+{
+  "cliVersion": "5.112.0",
+  "generatorName": "fernapi/fern-csharp-sdk",
+  "generatorVersion": "2.73.1",
+  "generatorConfig": {
+    "namespace": "Affinity",
+    "client-class-name": "AffinityClient"
+  },
+  "originGitCommit": "a9ce90840b150d1bf4764b129a8977bf684613b4",
+  "originGitCommitIsDirty": true,
+  "invokedBy": "manual",
+  "requestedVersion": "0.1.0"
+}

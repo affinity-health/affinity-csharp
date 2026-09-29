@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Affinity.Test/Affinity.Test.csproj" />
+  <Project Path="src/Affinity/Affinity.csproj" />
+</Solution>

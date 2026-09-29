@@ -1,0 +1,1 @@
+<Project><PropertyGroup><PackageId>Affinity.Health.Sdk</PackageId><Version>0.1.0</Version><Authors>Affinity Health</Authors><Description>C# client for the Affinity API</Description><PackageLicenseExpression>MIT</PackageLicenseExpression><RepositoryUrl>https://github.com/affinity-health/affinity-csharp</RepositoryUrl></PropertyGroup></Project>

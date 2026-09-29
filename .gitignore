@@ -1,0 +1,11 @@
+target/
+Cargo.lock
+**/bin/
+**/obj/
+packages/
+smoke/
+*.gem
+.bundle/
+vendor/
+Gemfile.lock
+.env

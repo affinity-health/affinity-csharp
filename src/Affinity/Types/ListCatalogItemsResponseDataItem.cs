@@ -1,0 +1,123 @@
+using Affinity.Core;
+using global::System.Text.Json;
+using global::System.Text.Json.Serialization;
+
+namespace Affinity;
+
+[Serializable]
+public record ListCatalogItemsResponseDataItem : IJsonOnDeserialized
+{
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
+    [JsonPropertyName("catalogDetails")]
+    public required ListCatalogItemsResponseDataItemCatalogDetails CatalogDetails { get; set; }
+
+    [JsonPropertyName("composition")]
+    public required ListCatalogItemsResponseDataItemComposition Composition { get; set; }
+
+    [JsonPropertyName("allowedStates")]
+    public IEnumerable<string> AllowedStates { get; set; } = new List<string>();
+
+    [JsonPropertyName("availability")]
+    public required ListCatalogItemsResponseDataItemAvailability Availability { get; set; }
+
+    [JsonPropertyName("catalogKind")]
+    public required string CatalogKind { get; set; }
+
+    [JsonPropertyName("fulfillmentInclusions")]
+    public IEnumerable<ListCatalogItemsResponseDataItemFulfillmentInclusionsItem> FulfillmentInclusions { get; set; } =
+        new List<ListCatalogItemsResponseDataItemFulfillmentInclusionsItem>();
+
+    [JsonPropertyName("ordering")]
+    public required ListCatalogItemsResponseDataItemOrdering Ordering { get; set; }
+
+    [JsonPropertyName("category")]
+    public string? Category { get; set; }
+
+    [JsonPropertyName("coldShip")]
+    public required bool ColdShip { get; set; }
+
+    [JsonPropertyName("pharmacyId")]
+    public required string PharmacyId { get; set; }
+
+    [JsonPropertyName("pharmacyName")]
+    public required string PharmacyName { get; set; }
+
+    [JsonPropertyName("description")]
+    public required string Description { get; set; }
+
+    [JsonPropertyName("dosageForm")]
+    public required string DosageForm { get; set; }
+
+    [JsonPropertyName("facilityType")]
+    public required string FacilityType { get; set; }
+
+    [JsonPropertyName("id")]
+    public required string Id { get; set; }
+
+    /// <summary>
+    /// Primary product photo, falling back to dosage-form artwork. Null when neither is available.
+    /// </summary>
+    [JsonPropertyName("imageUrl")]
+    public string? ImageUrl { get; set; }
+
+    [JsonPropertyName("imageUrls")]
+    public IEnumerable<string> ImageUrls { get; set; } = new List<string>();
+
+    [JsonPropertyName("medicationGroup")]
+    public ListCatalogItemsResponseDataItemMedicationGroup? MedicationGroup { get; set; }
+
+    [JsonPropertyName("isOrderable")]
+    public required bool IsOrderable { get; set; }
+
+    [JsonPropertyName("livemode")]
+    public required bool Livemode { get; set; }
+
+    [JsonPropertyName("name")]
+    public required string Name { get; set; }
+
+    [JsonPropertyName("object")]
+    public required ListCatalogItemsResponseDataItemObject Object { get; set; }
+
+    [JsonPropertyName("patientSpecificRequired")]
+    public required bool PatientSpecificRequired { get; set; }
+
+    [JsonPropertyName("quantityConstraint")]
+    public ListCatalogItemsResponseDataItemQuantityConstraint? QuantityConstraint { get; set; }
+
+    [JsonPropertyName("prescriptionRequirements")]
+    public required ListCatalogItemsResponseDataItemPrescriptionRequirements PrescriptionRequirements { get; set; }
+
+    [JsonPropertyName("pricing")]
+    public ListCatalogItemsResponseDataItemPricing? Pricing { get; set; }
+
+    [JsonPropertyName("restrictedStates")]
+    public IEnumerable<string> RestrictedStates { get; set; } = new List<string>();
+
+    [JsonPropertyName("route")]
+    public required string Route { get; set; }
+
+    [JsonPropertyName("shippingOptions")]
+    public IEnumerable<ListCatalogItemsResponseDataItemShippingOptionsItem> ShippingOptions { get; set; } =
+        new List<ListCatalogItemsResponseDataItemShippingOptionsItem>();
+
+    [JsonPropertyName("strength")]
+    public string? Strength { get; set; }
+
+    [JsonPropertyName("unit")]
+    public string? Unit { get; set; }
+
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
+}
