@@ -1,7 +1,9 @@
 # Affinity C# SDK
 
+[Proposed SDK guide](docs/guide.md) · Review the next interface for practice keys, platforms, patient records, and order signing. These examples are not implemented yet.
+
 Generated client for the Affinity API, version `2026-09-28`. This is a source preview
-at `0.1.0`; the generated interface may change before a stable release.
+at `0.2.0`; the generated interface may change before a stable release.
 
 ## Install and use
 
@@ -19,7 +21,7 @@ var client = new AffinityClient(
     apiKey: Environment.GetEnvironmentVariable("AFFINITY_API_KEY"),
     affinityVersion: "2026-09-28",
     clientOptions: new ClientOptions { MaxRetries = 0 });
-var page = await client.Orders.ListOrdersAsync(new ListOrdersRequest { Limit = 20 });
+var page = await client.Orders.ListAsync(new ListOrdersRequest { Limit = 20 });
 ```
 
 For a local NuGet package, run `dotnet pack src/Affinity/Affinity.csproj -o ./packages`.
@@ -52,3 +54,10 @@ The committed [OpenAPI contract](spec/affinity.openapi.json) is the source of tr
 [generation.json](generation.json) records the pinned Cloudflare Forge and Fern
 versions and source hash. Generation is maintained in Affinity's SDK pipeline.
 Do not edit generated models directly.
+
+## Guide
+
+Read the [C# guide](https://docs.joinaffinityai.com/guides/reference/sdks/csharp/) for patients, catalog items, writes, pagination, and errors.
+
+Version 0.2.0 defaults to API `2026-09-28`, no automatic retries, and a 60-second timeout.
+Explicit client and request options override these defaults. Custom HTTP transports manage their own timeout support.
