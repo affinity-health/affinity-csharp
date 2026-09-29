@@ -5,7 +5,7 @@
   current release. Package versions and migration steps will follow approval.
 
 
-.NET server applications. Cancellation tokens remain available on asynchronous methods. [Source repository](https://github.com/affinity-health/affinity-csharp) · [All SDKs](https://docs.joinaffinityai.com/guides/reference/sdks/) · [Shared conventions](https://docs.joinaffinityai.com/guides/reference/sdks/methods/)
+.NET server applications. Cancellation tokens remain available on asynchronous methods. [Source repository](https://github.com/affinity-health/affinity-csharp) · [All SDKs](https://docs.joinaffinityai.com/guides/reference/sdks/)
 
 ## Connect
 
@@ -35,7 +35,11 @@ Pass the target practice with each practice-scoped request. Keep record data sep
 
 ```csharp
 var options = new RequestOptions { PracticeId = practiceId };
-var patients = await api.Patients.ListAsync(new PatientListParams { Limit = 20 }, options);
+var patients = await api.Patients.ListAsync(
+    new PatientListParams { Limit = 20 },
+    options
+);
+
 var patient = await api.Patients.GetAsync(patientId, options);
 
 await api.Patients.UpdateAsync(
@@ -45,6 +49,7 @@ await api.Patients.UpdateAsync(
         PracticeId = practiceId,
     }
 );
+
 ```
 
 ## Scope a workflow once
@@ -56,7 +61,10 @@ A conflicting practice ID produces an error. Scoping never grants access to anot
 var practice = api.ForPractice(practiceId);
 
 var patients = await practice.Patients.ListAsync(new PatientListParams { Limit = 20 });
-var items = await practice.Catalog.Items.ListAsync(new CatalogItemListParams { Limit = 20 });
+var items = await practice.Catalog.Items.ListAsync(
+    new CatalogItemListParams { Limit = 20 }
+);
+
 ```
 
 The following examples use this scoped client. A practice-key client supports the same calls without the scoping step.
@@ -101,6 +109,7 @@ var order = await api.Orders.CreateAsync(
     new OrderCreateParams { PatientId = patientId, Prescriptions = draft.Prescriptions },
     new RequestOptions { PracticeId = practiceId, IdempotencyKey = job.CreateOrderKey }
 );
+
 ```
 
 ## Sign and submit
@@ -144,7 +153,11 @@ if (page.HasMore && page.Data.Any()) {
     });
 }
 
-await foreach (var patient in practice.Patients.IterateAsync(new PatientListParams { Limit = 100 })) {
+var patients = practice.Patients.IterateAsync(
+    new PatientListParams { Limit = 100 }
+);
+
+await foreach (var patient in patients) {
     await SyncPatientAsync(patient);
 }
 ```
@@ -176,10 +189,13 @@ The webhook list belongs to the platform itself. Access to another organization'
 ```csharp
 var practices = await api.Practices.ListAsync(new PracticeListParams { Limit = 20 });
 var selected = await api.Practices.GetAsync(practiceId);
-var endpoints = await api.Webhooks.Endpoints.ListAsync(new WebhookEndpointListParams { Limit = 20 });
+var endpoints = await api.Webhooks.Endpoints.ListAsync(
+    new WebhookEndpointListParams { Limit = 20 }
+);
+
 ```
 
 ## More resources
 
 Use the same conventions for addresses, allergies, locations, team members, and nested order resources.
-[Resource directory](https://docs.joinaffinityai.com/guides/reference/sdks/methods/) · [API reference](https://docs.joinaffinityai.com/api/) · [Webhooks](https://docs.joinaffinityai.com/guides/webhooks/)
+[API reference](https://docs.joinaffinityai.com/api/) · [Webhooks](https://docs.joinaffinityai.com/guides/webhooks/)
