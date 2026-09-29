@@ -1,11 +1,16 @@
 # C# SDK guide
 
-> **Unreleased SDK update.**
-  These examples match the new SDK implementation in the repository. They are not available in the
-  current published release yet. Release versions and installation updates will follow.
-
-
 .NET server applications. Cancellation tokens remain available on asynchronous methods. [Source repository](https://github.com/affinity-health/affinity-csharp) · [All SDKs](https://docs.joinaffinityai.com/guides/reference/sdks/)
+
+## Install
+
+Build a local NuGet package, then add the resulting directory as a NuGet source in your application.
+
+```sh
+git clone https://github.com/affinity-health/affinity-csharp.git
+cd affinity-csharp
+dotnet pack src/Affinity/Affinity.csproj -o ./packages
+```
 
 ## Connect
 
