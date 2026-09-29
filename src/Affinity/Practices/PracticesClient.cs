@@ -12,7 +12,7 @@ public partial class PracticesClient : IPracticesClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<ListPracticesResponse>> ListPracticesAsyncCore(
+    private async Task<WithRawResponse<ListPracticesResponse>> ListAsyncCore(
         ListPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -191,7 +191,7 @@ public partial class PracticesClient : IPracticesClient
         }
     }
 
-    private async Task<WithRawResponse<CreatePracticeResponse>> CreatePracticeAsyncCore(
+    private async Task<WithRawResponse<CreatePracticeResponse>> CreateAsyncCore(
         CreatePracticeRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -369,8 +369,8 @@ public partial class PracticesClient : IPracticesClient
         }
     }
 
-    private async Task<WithRawResponse<GetPracticeResponse>> GetPracticeAsyncCore(
-        GetPracticeRequest request,
+    private async Task<WithRawResponse<GetPracticeResponse>> GetAsyncCore(
+        GetPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -547,7 +547,7 @@ public partial class PracticesClient : IPracticesClient
         }
     }
 
-    private async Task<WithRawResponse<UpdatePracticeResponse>> UpdatePracticeAsyncCore(
+    private async Task<WithRawResponse<UpdatePracticeResponse>> UpdateAsyncCore(
         UpdatePracticeRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -557,7 +557,7 @@ public partial class PracticesClient : IPracticesClient
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
+            .Add("Idempotency-Key", request.IdempotencyKey ?? System.Guid.NewGuid().ToString()) // affinity-sdk-auto-key
             .Add(_client.Options.Headers)
             .Add(_client.Options.AdditionalHeaders)
             .Add(options?.AdditionalHeaders)
@@ -732,7 +732,7 @@ public partial class PracticesClient : IPracticesClient
     /// Returns the practices that belong to the platform. The default Affinity-Version is 2026-09-28.
     /// </summary>
     /// <example><code>
-    /// await client.Practices.ListPracticesAsync(
+    /// await client.Practices.ListAsync(
     ///     new ListPracticesRequest
     ///     {
     ///         EndingBefore = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -740,14 +740,14 @@ public partial class PracticesClient : IPracticesClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<ListPracticesResponse> ListPracticesAsync(
+    public WithRawResponseTask<ListPracticesResponse> ListAsync(
         ListPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<ListPracticesResponse>(
-            ListPracticesAsyncCore(request, options, cancellationToken)
+            ListAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -755,7 +755,7 @@ public partial class PracticesClient : IPracticesClient
     /// Creates a practice owned by the platform. Set liveEnabled to true to enable Live access at creation with an approved platform and a Live request. Defaults to false. Requires practices:write. Send Idempotency-Key when you retry the same request.
     /// </summary>
     /// <example><code>
-    /// await client.Practices.CreatePracticeAsync(
+    /// await client.Practices.CreateAsync(
     ///     new CreatePracticeRequest
     ///     {
     ///         Address = new CreatePracticeRequestAddress
@@ -796,14 +796,14 @@ public partial class PracticesClient : IPracticesClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<CreatePracticeResponse> CreatePracticeAsync(
+    public WithRawResponseTask<CreatePracticeResponse> CreateAsync(
         CreatePracticeRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<CreatePracticeResponse>(
-            CreatePracticeAsyncCore(request, options, cancellationToken)
+            CreateAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -811,18 +811,18 @@ public partial class PracticesClient : IPracticesClient
     /// Returns one practice that belongs to the platform.
     /// </summary>
     /// <example><code>
-    /// await client.Practices.GetPracticeAsync(
-    ///     new GetPracticeRequest { PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc" }
+    /// await client.Practices.GetAsync(
+    ///     new GetPracticesRequest { PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc" }
     /// );
     /// </code></example>
-    public WithRawResponseTask<GetPracticeResponse> GetPracticeAsync(
-        GetPracticeRequest request,
+    public WithRawResponseTask<GetPracticeResponse> GetAsync(
+        GetPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<GetPracticeResponse>(
-            GetPracticeAsyncCore(request, options, cancellationToken)
+            GetAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -830,18 +830,18 @@ public partial class PracticesClient : IPracticesClient
     /// Updates one practice owned by the platform. Set liveEnabled to true or false to control Live access with an approved platform and a Live request. Affinity Admin decisions take precedence. Requires practices:write. Send Idempotency-Key when you retry the same request.
     /// </summary>
     /// <example><code>
-    /// await client.Practices.UpdatePracticeAsync(
+    /// await client.Practices.UpdateAsync(
     ///     new UpdatePracticeRequest { PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc" }
     /// );
     /// </code></example>
-    public WithRawResponseTask<UpdatePracticeResponse> UpdatePracticeAsync(
+    public WithRawResponseTask<UpdatePracticeResponse> UpdateAsync(
         UpdatePracticeRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<UpdatePracticeResponse>(
-            UpdatePracticeAsyncCore(request, options, cancellationToken)
+            UpdateAsyncCore(request, options, cancellationToken)
         );
     }
 }

@@ -12,8 +12,11 @@ public record UpdatePracticeLocationRequest
     [JsonIgnore]
     public required string LocationId { get; set; }
 
+    /// <summary>
+    /// Optional in the SDK. A fresh key is generated once per call when omitted. Supply a stable key to retry across calls.
+    /// </summary>
     [JsonIgnore]
-    public required string IdempotencyKey { get; set; }
+    public string? IdempotencyKey { get; set; }
 
     [JsonPropertyName("city")]
     public string? City { get; set; }

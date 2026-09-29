@@ -12,7 +12,7 @@ public partial class AccountClient : IAccountClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<GetAccountResponse>> GetAccountAsyncCore(
+    private async Task<WithRawResponse<GetAccountResponse>> GetAsyncCore(
         GetAccountRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -192,18 +192,16 @@ public partial class AccountClient : IAccountClient
     /// Returns the platform organization, request livemode, and effective access. API keys report scopes and the service_key role; dashboard sessions report membership permissions. operatingMode describes organization Live access, not the credential's Test/Live mode.
     /// </summary>
     /// <example><code>
-    /// await client.Account.GetAccountAsync(
-    ///     new GetAccountRequest { OrgId = "acct_01j2y8m6jcc9tt24af5pw9x1bc" }
-    /// );
+    /// await client.Account.GetAsync(new GetAccountRequest { OrgId = "acct_01j2y8m6jcc9tt24af5pw9x1bc" });
     /// </code></example>
-    public WithRawResponseTask<GetAccountResponse> GetAccountAsync(
+    public WithRawResponseTask<GetAccountResponse> GetAsync(
         GetAccountRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<GetAccountResponse>(
-            GetAccountAsyncCore(request, options, cancellationToken)
+            GetAsyncCore(request, options, cancellationToken)
         );
     }
 }

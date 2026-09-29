@@ -1,14 +1,16 @@
+using Affinity.Catalog;
 using Affinity.Core;
+using Affinity.Webhooks;
 
 namespace Affinity;
 
-public partial class AffinityClient : IAffinityClient
+public partial class GeneratedAffinityClient : IAffinityClient
 {
     private readonly RawClient _client;
 
-    public AffinityClient(
+    public GeneratedAffinityClient(
         string? apiKey = null,
-        string? affinityVersion = null,
+        string? affinityVersion = "2026-09-28",
         ClientOptions? clientOptions = null
     )
     {
@@ -44,13 +46,13 @@ public partial class AffinityClient : IAffinityClient
         Locations = new LocationsClient(_client);
         ApiKeys = new ApiKeysClient(_client);
         Account = new AccountClient(_client);
-        Catalog = new CatalogClient(_client);
+        Pharmacies = new PharmaciesClient(_client);
         Orders = new OrdersClient(_client);
-        Webhooks = new WebhooksClient(_client);
         Team = new TeamClient(_client);
-        Patients = new PatientsClient(_client);
         Practices = new PracticesClient(_client);
-        PlatformPricing = new PlatformPricingClient(_client);
+        Patients = new PatientsClient(_client);
+        Catalog = new CatalogClient(_client);
+        Webhooks = new WebhooksClient(_client);
     }
 
     public ILocationsClient Locations { get; }
@@ -59,17 +61,17 @@ public partial class AffinityClient : IAffinityClient
 
     public IAccountClient Account { get; }
 
-    public ICatalogClient Catalog { get; }
+    public IPharmaciesClient Pharmacies { get; }
 
     public IOrdersClient Orders { get; }
 
-    public IWebhooksClient Webhooks { get; }
-
     public ITeamClient Team { get; }
-
-    public IPatientsClient Patients { get; }
 
     public IPracticesClient Practices { get; }
 
-    public IPlatformPricingClient PlatformPricing { get; }
+    public IPatientsClient Patients { get; }
+
+    public ICatalogClient Catalog { get; }
+
+    public IWebhooksClient Webhooks { get; }
 }

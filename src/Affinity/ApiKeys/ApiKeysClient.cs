@@ -12,9 +12,7 @@ public partial class ApiKeysClient : IApiKeysClient
         _client = client;
     }
 
-    private async Task<
-        WithRawResponse<CreatePlatformPracticeApiKeyResponse>
-    > CreatePlatformPracticeApiKeyAsyncCore(
+    private async Task<WithRawResponse<CreatePlatformPracticeApiKeyResponse>> CreateAsyncCore(
         CreatePlatformPracticeApiKeyRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -185,7 +183,7 @@ public partial class ApiKeysClient : IApiKeysClient
         }
     }
 
-    private async Task<WithRawResponse<GetApiAccessResponse>> GetApiAccessAsyncCore(
+    private async Task<WithRawResponse<GetApiAccessResponse>> GetAccessAsyncCore(
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -327,7 +325,7 @@ public partial class ApiKeysClient : IApiKeysClient
     /// Creates a practice API key for a connected practice. Requires a platform key with service_keys:write and every requested scope. The practice key uses the platform key's Test or Live mode and cannot outlive it. Requires Idempotency-Key for safe retries; the secret is returned in the encrypted replay response for 24 hours.
     /// </summary>
     /// <example><code>
-    /// await client.ApiKeys.CreatePlatformPracticeApiKeyAsync(
+    /// await client.ApiKeys.CreateAsync(
     ///     new CreatePlatformPracticeApiKeyRequest
     ///     {
     ///         PracticeId = "practiceId",
@@ -336,14 +334,14 @@ public partial class ApiKeysClient : IApiKeysClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<CreatePlatformPracticeApiKeyResponse> CreatePlatformPracticeApiKeyAsync(
+    public WithRawResponseTask<CreatePlatformPracticeApiKeyResponse> CreateAsync(
         CreatePlatformPracticeApiKeyRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<CreatePlatformPracticeApiKeyResponse>(
-            CreatePlatformPracticeApiKeyAsyncCore(request, options, cancellationToken)
+            CreateAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -351,15 +349,15 @@ public partial class ApiKeysClient : IApiKeysClient
     /// Returns the subject, mode, and scopes for the API key.
     /// </summary>
     /// <example><code>
-    /// await client.ApiKeys.GetApiAccessAsync();
+    /// await client.ApiKeys.GetAccessAsync();
     /// </code></example>
-    public WithRawResponseTask<GetApiAccessResponse> GetApiAccessAsync(
+    public WithRawResponseTask<GetApiAccessResponse> GetAccessAsync(
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<GetApiAccessResponse>(
-            GetApiAccessAsyncCore(options, cancellationToken)
+            GetAccessAsyncCore(options, cancellationToken)
         );
     }
 }

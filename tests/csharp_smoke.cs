@@ -4,11 +4,11 @@ using System.Text;
 using System.Text.Json;
 
 var handler = new MockTransport();
-var client = new AffinityClient(apiKey: "synthetic-key", affinityVersion: "2026-09-28", clientOptions: new ClientOptions { BaseUrl = "https://sdk-test.invalid", HttpClient = new HttpClient(handler), MaxRetries = 0 });
-var page = await client.Orders.ListOrdersAsync(new ListOrdersRequest { Limit = 2, StartingAfter = "ord_cursor" });
+var client = new GeneratedAffinityClient(apiKey: "synthetic-key", clientOptions: new ClientOptions { BaseUrl = "https://sdk-test.invalid", HttpClient = new HttpClient(handler), MaxRetries = 0 });
+var page = await client.Orders.ListAsync(new ListOrdersRequest { Limit = 2, StartingAfter = "ord_cursor" });
 if (page.Data.Any() || page.HasMore) throw new Exception("response");
 bool failed = false;
-try { await client.Orders.CreateOrderAsync(new CreateOrderRequest { IdempotencyKey = "stable-synthetic-key", PracticeId = "prac_synthetic", PatientId = "pat_synthetic", Prescriptions = [] }); }
+try { await client.Orders.CreateAsync(new CreateOrderRequest { IdempotencyKey = "stable-synthetic-key", PracticeId = "prac_synthetic", PatientId = "pat_synthetic", Prescriptions = [] }); }
 catch (Exception e) when (e.GetType().Namespace?.StartsWith("Affinity") == true) { failed = true; }
 if (!failed || handler.Count != 2) throw new Exception("error handling or retries");
 Console.WriteLine("C# transport and decoding checks passed");

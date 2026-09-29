@@ -12,8 +12,11 @@ public record UpdatePatientRequest
     [JsonIgnore]
     public required string PatientId { get; set; }
 
+    /// <summary>
+    /// Optional in the SDK. A fresh key is generated once per call when omitted. Supply a stable key to retry across calls.
+    /// </summary>
     [JsonIgnore]
-    public required string IdempotencyKey { get; set; }
+    public string? IdempotencyKey { get; set; }
 
     /// <summary>
     /// Required for user actors and optional for system actors. Omit both actor headers to use the authenticated service account as a system actor.

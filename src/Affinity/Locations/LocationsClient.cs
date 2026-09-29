@@ -12,10 +12,8 @@ public partial class LocationsClient : ILocationsClient
         _client = client;
     }
 
-    private async Task<
-        WithRawResponse<ListPracticeLocationsResponse>
-    > ListPracticeLocationsAsyncCore(
-        ListPracticeLocationsRequest request,
+    private async Task<WithRawResponse<ListPracticeLocationsResponse>> ListAsyncCore(
+        ListLocationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -186,9 +184,7 @@ public partial class LocationsClient : ILocationsClient
         }
     }
 
-    private async Task<
-        WithRawResponse<CreatePracticeLocationResponse>
-    > CreatePracticeLocationAsyncCore(
+    private async Task<WithRawResponse<CreatePracticeLocationResponse>> CreateAsyncCore(
         CreatePracticeLocationRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -198,7 +194,7 @@ public partial class LocationsClient : ILocationsClient
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
+            .Add("Idempotency-Key", request.IdempotencyKey ?? System.Guid.NewGuid().ToString()) // affinity-sdk-auto-key
             .Add(_client.Options.Headers)
             .Add(_client.Options.AdditionalHeaders)
             .Add(options?.AdditionalHeaders)
@@ -359,8 +355,8 @@ public partial class LocationsClient : ILocationsClient
         }
     }
 
-    private async Task<WithRawResponse<GetPracticeLocationResponse>> GetPracticeLocationAsyncCore(
-        GetPracticeLocationRequest request,
+    private async Task<WithRawResponse<GetPracticeLocationResponse>> GetAsyncCore(
+        GetLocationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -528,9 +524,7 @@ public partial class LocationsClient : ILocationsClient
         }
     }
 
-    private async Task<
-        WithRawResponse<UpdatePracticeLocationResponse>
-    > UpdatePracticeLocationAsyncCore(
+    private async Task<WithRawResponse<UpdatePracticeLocationResponse>> UpdateAsyncCore(
         UpdatePracticeLocationRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -540,7 +534,7 @@ public partial class LocationsClient : ILocationsClient
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
+            .Add("Idempotency-Key", request.IdempotencyKey ?? System.Guid.NewGuid().ToString()) // affinity-sdk-auto-key
             .Add(_client.Options.Headers)
             .Add(_client.Options.AdditionalHeaders)
             .Add(options?.AdditionalHeaders)
@@ -702,10 +696,8 @@ public partial class LocationsClient : ILocationsClient
         }
     }
 
-    private async Task<
-        WithRawResponse<ArchivePracticeLocationResponse>
-    > ArchivePracticeLocationAsyncCore(
-        ArchivePracticeLocationRequest request,
+    private async Task<WithRawResponse<ArchivePracticeLocationResponse>> ArchiveAsyncCore(
+        ArchiveLocationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -714,7 +706,7 @@ public partial class LocationsClient : ILocationsClient
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
+            .Add("Idempotency-Key", request.IdempotencyKey ?? System.Guid.NewGuid().ToString()) // affinity-sdk-auto-key
             .Add(_client.Options.Headers)
             .Add(_client.Options.AdditionalHeaders)
             .Add(options?.AdditionalHeaders)
@@ -878,8 +870,8 @@ public partial class LocationsClient : ILocationsClient
     /// Requires locations:read on a practice key or an authorized platform key. Lists active and archived locations by name, with cursor pagination. Use status to filter. Location records are shared between Test and Live for the same practice.
     /// </summary>
     /// <example><code>
-    /// await client.Locations.ListPracticeLocationsAsync(
-    ///     new ListPracticeLocationsRequest
+    /// await client.Locations.ListAsync(
+    ///     new ListLocationsRequest
     ///     {
     ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
     ///         StartingAfter = "loc_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -887,14 +879,14 @@ public partial class LocationsClient : ILocationsClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<ListPracticeLocationsResponse> ListPracticeLocationsAsync(
-        ListPracticeLocationsRequest request,
+    public WithRawResponseTask<ListPracticeLocationsResponse> ListAsync(
+        ListLocationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<ListPracticeLocationsResponse>(
-            ListPracticeLocationsAsyncCore(request, options, cancellationToken)
+            ListAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -902,23 +894,22 @@ public partial class LocationsClient : ILocationsClient
     /// Requires locations:write and Idempotency-Key for API keys. Creates an active location with a unique name in this practice. Locations are shared between Test and Live. Use the returned ID for Team location access.
     /// </summary>
     /// <example><code>
-    /// await client.Locations.CreatePracticeLocationAsync(
+    /// await client.Locations.CreateAsync(
     ///     new CreatePracticeLocationRequest
     ///     {
     ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         IdempotencyKey = "Idempotency-Key",
     ///         Name = "name",
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<CreatePracticeLocationResponse> CreatePracticeLocationAsync(
+    public WithRawResponseTask<CreatePracticeLocationResponse> CreateAsync(
         CreatePracticeLocationRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<CreatePracticeLocationResponse>(
-            CreatePracticeLocationAsyncCore(request, options, cancellationToken)
+            CreateAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -926,22 +917,22 @@ public partial class LocationsClient : ILocationsClient
     /// Requires locations:read. Returns one active or archived location in the authorized practice.
     /// </summary>
     /// <example><code>
-    /// await client.Locations.GetPracticeLocationAsync(
-    ///     new GetPracticeLocationRequest
+    /// await client.Locations.GetAsync(
+    ///     new GetLocationsRequest
     ///     {
     ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
     ///         LocationId = "loc_01j2y8m6jcc9tt24af5pw9x1bc",
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<GetPracticeLocationResponse> GetPracticeLocationAsync(
-        GetPracticeLocationRequest request,
+    public WithRawResponseTask<GetPracticeLocationResponse> GetAsync(
+        GetLocationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<GetPracticeLocationResponse>(
-            GetPracticeLocationAsyncCore(request, options, cancellationToken)
+            GetAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -949,23 +940,22 @@ public partial class LocationsClient : ILocationsClient
     /// Requires locations:write and Idempotency-Key for API keys. Updates only supplied fields; null clears optional contact and address fields. Archived locations cannot be updated. Changes apply to both Test and Live.
     /// </summary>
     /// <example><code>
-    /// await client.Locations.UpdatePracticeLocationAsync(
+    /// await client.Locations.UpdateAsync(
     ///     new UpdatePracticeLocationRequest
     ///     {
     ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
     ///         LocationId = "loc_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         IdempotencyKey = "Idempotency-Key",
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<UpdatePracticeLocationResponse> UpdatePracticeLocationAsync(
+    public WithRawResponseTask<UpdatePracticeLocationResponse> UpdateAsync(
         UpdatePracticeLocationRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<UpdatePracticeLocationResponse>(
-            UpdatePracticeLocationAsyncCore(request, options, cancellationToken)
+            UpdateAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -973,23 +963,22 @@ public partial class LocationsClient : ILocationsClient
     /// Requires locations:write and Idempotency-Key for API keys. Retains the location and historical associations. Archived locations cannot receive new Team assignments. Repeating archive returns the archived location. Changes apply to both Test and Live.
     /// </summary>
     /// <example><code>
-    /// await client.Locations.ArchivePracticeLocationAsync(
-    ///     new ArchivePracticeLocationRequest
+    /// await client.Locations.ArchiveAsync(
+    ///     new ArchiveLocationsRequest
     ///     {
     ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
     ///         LocationId = "loc_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         IdempotencyKey = "Idempotency-Key",
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<ArchivePracticeLocationResponse> ArchivePracticeLocationAsync(
-        ArchivePracticeLocationRequest request,
+    public WithRawResponseTask<ArchivePracticeLocationResponse> ArchiveAsync(
+        ArchiveLocationsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<ArchivePracticeLocationResponse>(
-            ArchivePracticeLocationAsyncCore(request, options, cancellationToken)
+            ArchiveAsyncCore(request, options, cancellationToken)
         );
     }
 }

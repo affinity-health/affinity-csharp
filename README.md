@@ -1,63 +1,43 @@
 # Affinity C# SDK
 
-[Proposed SDK guide](docs/guide.md) · Review the next interface for practice keys, platforms, patient records, and order signing. These examples are not implemented yet.
+Server-side client for the Affinity API. Requires .NET 8+, .NET Standard 2.0, or .NET Framework 4.6.2.
 
-Generated client for the Affinity API, version `2026-09-28`. This is a source preview
-at `0.2.0`; the generated interface may change before a stable release.
+The new interface is implemented in this source update and has not been published to a registry yet.
 
-## Install and use
-
-Requires the .NET 9 SDK to build. The library targets .NET Framework 4.6.2, .NET Standard 2.0, .NET 8, and .NET 9.
+## Install from source
 
 ```sh
 git clone https://github.com/affinity-health/affinity-csharp.git
-dotnet add YourApp.csproj reference affinity-csharp/src/Affinity/Affinity.csproj
+cd affinity-csharp
+dotnet pack src/Affinity/Affinity.csproj
 ```
+
+## Use
+
+Set `AFFINITY_API_KEY` to a Test practice key on your server. Keep API keys out of browser and mobile code.
 
 ```csharp
 using Affinity;
 
-var client = new AffinityClient(
-    apiKey: Environment.GetEnvironmentVariable("AFFINITY_API_KEY"),
-    affinityVersion: "2026-09-28",
-    clientOptions: new ClientOptions { MaxRetries = 0 });
-var page = await client.Orders.ListAsync(new ListOrdersRequest { Limit = 20 });
+var api = new AffinityClient(Environment.GetEnvironmentVariable("AFFINITY_API_KEY")!);
+var patients = await api.Patients.ListAsync(new PatientListParams { Limit = 20 });
 ```
 
-For a local NuGet package, run `dotnet pack src/Affinity/Affinity.csproj -o ./packages`.
-`Affinity.Health.Sdk` is a local package name; it is not published on NuGet.
 
-Use a server-side API key from `AFFINITY_API_KEY`. Never embed keys in a browser or
-shipped application. The default base URL is `https://api.joinaffinityai.com`.
-These examples disable automatic retries. Reuse the same idempotency key when
-retrying a write that requires one. List responses expose data and cursor metadata;
-pass the next cursor explicitly when fetching more records.
 
-See [the generated reference](reference.md) for resource methods and types and
-[Affinity documentation](https://docs.joinaffinityai.com) for API behavior.
-Generated reference examples may assume registry publication; use the installation
-instructions above while this SDK is available only from GitHub.
+Practice keys identify their practice automatically. Platform keys pass a practice ID in request options or use a scoped client.
 
-## Development
+See the [SDK guide](docs/guide.md) for platform requests, patient updates, signing, submission, pagination, and errors.
+Routine patient writes generate an idempotency key. Persist your own keys for order creation, signing, and submission.
 
-With Docker installed:
+Defaults: API `2026-09-28`, a 60-second timeout, and no automatic retries.
+
+## Verify
 
 ```sh
 ./scripts/check.sh
 ```
 
-This builds/packages the SDK locally and checks synthetic HTTP requests, authentication,
-API version headers, pagination parameters, response decoding, and failed writes.
-It does not call the hosted API or publish a package.
+The tests use synthetic fixtures on loopback. The fixture runner requires Python 3; Docker runs the language toolchain for the `scripts/check.sh` commands.
 
-The committed [OpenAPI contract](spec/affinity.openapi.json) is the source of truth.
-[generation.json](generation.json) records the pinned Cloudflare Forge and Fern
-versions and source hash. Generation is maintained in Affinity's SDK pipeline.
-Do not edit generated models directly.
-
-## Guide
-
-Read the [C# guide](https://docs.joinaffinityai.com/guides/reference/sdks/csharp/) for patients, catalog items, writes, pagination, and errors.
-
-Version 0.2.0 defaults to API `2026-09-28`, no automatic retries, and a 60-second timeout.
-Explicit client and request options override these defaults. Custom HTTP transports manage their own timeout support.
+Generated with Cloudflare Forge, Fern, and Affinity's facade generator. [generation.json](generation.json) records the pinned inputs. Fix the generator in the Affinity monorepo before regenerating client code.

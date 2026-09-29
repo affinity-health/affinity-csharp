@@ -9,6 +9,9 @@ public record UpdatePracticeRequest
     [JsonIgnore]
     public required string PracticeId { get; set; }
 
+    /// <summary>
+    /// Optional in the SDK. A fresh key is generated once per call when omitted. Supply a stable key to retry across calls.
+    /// </summary>
     [JsonIgnore]
     public string? IdempotencyKey { get; set; }
 

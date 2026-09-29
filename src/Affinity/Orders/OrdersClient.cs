@@ -1,4 +1,5 @@
 using Affinity.Core;
+using Affinity.Orders;
 using global::System.Text.Json;
 
 namespace Affinity;
@@ -10,9 +11,24 @@ public partial class OrdersClient : IOrdersClient
     internal OrdersClient(RawClient client)
     {
         _client = client;
+        Exceptions = new ExceptionsClient(_client);
+        Events = new Affinity.Orders.EventsClient(_client);
+        TestSimulation = new TestSimulationClient(_client);
+        Prescriptions = new PrescriptionsClient(_client);
+        Batches = new BatchesClient(_client);
     }
 
-    private async Task<WithRawResponse<ListOrdersResponse>> ListOrdersAsyncCore(
+    public IExceptionsClient Exceptions { get; }
+
+    public Affinity.Orders.IEventsClient Events { get; }
+
+    public ITestSimulationClient TestSimulation { get; }
+
+    public IPrescriptionsClient Prescriptions { get; }
+
+    public IBatchesClient Batches { get; }
+
+    private async Task<WithRawResponse<ListOrdersResponse>> ListAsyncCore(
         ListOrdersRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -202,7 +218,7 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<CreateOrderResponse>> CreateOrderAsyncCore(
+    private async Task<WithRawResponse<CreateOrderResponse>> CreateAsyncCore(
         CreateOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -394,8 +410,8 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<GetOrderResponse>> GetOrderAsyncCore(
-        GetOrderRequest request,
+    private async Task<WithRawResponse<GetOrderResponse>> GetAsyncCore(
+        GetOrdersRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -574,7 +590,7 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<CancelOrderResponse>> CancelOrderAsyncCore(
+    private async Task<WithRawResponse<CancelOrderResponse>> CancelAsyncCore(
         CancelOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -757,743 +773,7 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<ActOnOrderExceptionResponse>> ActOnOrderExceptionAsyncCore(
-        ActOnOrderExceptionRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 0)
-            .MergeAdditional(options?.AdditionalQueryParameters)
-            .Build();
-        var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
-            .Add("Affinity-Actor-Id", request.AffinityActorId)
-            .Add("Affinity-Actor-Type", request.AffinityActorType)
-            .Add(_client.Options.Headers)
-            .Add(_client.Options.AdditionalHeaders)
-            .Add(options?.AdditionalHeaders)
-            .BuildAsync()
-            .ConfigureAwait(false);
-        var response = await _client
-            .SendRequestAsync(
-                new JsonRequest
-                {
-                    Method = HttpMethod.Post,
-                    Path = string.Format(
-                        "v1/orders/{0}/exceptions/{1}/actions",
-                        ValueConvert.ToPathParameterString(request.OrderId),
-                        ValueConvert.ToPathParameterString(request.ExceptionId)
-                    ),
-                    Body = request,
-                    QueryString = _queryString,
-                    Headers = _headers,
-                    ContentType = "application/json",
-                    Options = options,
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-        if (response.StatusCode is >= 200 and < 400)
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                var responseData = JsonUtils.Deserialize<ActOnOrderExceptionResponse>(
-                    responseBody
-                )!;
-                return new WithRawResponse<ActOnOrderExceptionResponse>()
-                {
-                    Data = responseData,
-                    RawResponse = new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    },
-                };
-            }
-            catch (JsonException e)
-            {
-                throw new AffinityClientApiException(
-                    "Failed to deserialize response",
-                    response.StatusCode,
-                    responseBody,
-                    e,
-                    rawResponse: new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    }
-                );
-            }
-        }
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                switch (response.StatusCode)
-                {
-                    case 400:
-                        throw new BadRequestError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 401:
-                        throw new UnauthorizedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 403:
-                        throw new ForbiddenError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 404:
-                        throw new NotFoundError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 409:
-                        throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 429:
-                        throw new TooManyRequestsError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                }
-            }
-            catch (JsonException)
-            {
-                // unable to map error response, throwing generic error
-            }
-            throw new AffinityClientApiException(
-                $"Error with status code {response.StatusCode}",
-                response.StatusCode,
-                responseBody,
-                rawResponse: new Affinity.RawResponse()
-                {
-                    StatusCode = response.Raw.StatusCode,
-                    Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                    Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                }
-            );
-        }
-    }
-
-    private async Task<WithRawResponse<ListOrderEventsResponse>> ListOrderEventsAsyncCore(
-        ListOrderEventsRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 3)
-            .Add("endingBefore", request.EndingBefore)
-            .Add("limit", request.Limit)
-            .Add("startingAfter", request.StartingAfter)
-            .MergeAdditional(options?.AdditionalQueryParameters)
-            .Build();
-        var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Affinity-Actor-Id", request.AffinityActorId)
-            .Add("Affinity-Actor-Type", request.AffinityActorType)
-            .Add(_client.Options.Headers)
-            .Add(_client.Options.AdditionalHeaders)
-            .Add(options?.AdditionalHeaders)
-            .BuildAsync()
-            .ConfigureAwait(false);
-        var response = await _client
-            .SendRequestAsync(
-                new JsonRequest
-                {
-                    Method = HttpMethod.Get,
-                    Path = string.Format(
-                        "v1/orders/{0}/events",
-                        ValueConvert.ToPathParameterString(request.OrderId)
-                    ),
-                    QueryString = _queryString,
-                    Headers = _headers,
-                    Options = options,
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-        if (response.StatusCode is >= 200 and < 400)
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                var responseData = JsonUtils.Deserialize<ListOrderEventsResponse>(responseBody)!;
-                return new WithRawResponse<ListOrderEventsResponse>()
-                {
-                    Data = responseData,
-                    RawResponse = new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    },
-                };
-            }
-            catch (JsonException e)
-            {
-                throw new AffinityClientApiException(
-                    "Failed to deserialize response",
-                    response.StatusCode,
-                    responseBody,
-                    e,
-                    rawResponse: new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    }
-                );
-            }
-        }
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                switch (response.StatusCode)
-                {
-                    case 400:
-                        throw new BadRequestError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 401:
-                        throw new UnauthorizedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 403:
-                        throw new ForbiddenError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 404:
-                        throw new NotFoundError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 409:
-                        throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 429:
-                        throw new TooManyRequestsError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                }
-            }
-            catch (JsonException)
-            {
-                // unable to map error response, throwing generic error
-            }
-            throw new AffinityClientApiException(
-                $"Error with status code {response.StatusCode}",
-                response.StatusCode,
-                responseBody,
-                rawResponse: new Affinity.RawResponse()
-                {
-                    StatusCode = response.Raw.StatusCode,
-                    Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                    Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                }
-            );
-        }
-    }
-
-    private async Task<
-        WithRawResponse<GetOrderTestSimulationResponse>
-    > GetOrderTestSimulationAsyncCore(
-        GetOrderTestSimulationRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 0)
-            .MergeAdditional(options?.AdditionalQueryParameters)
-            .Build();
-        var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add(_client.Options.Headers)
-            .Add(_client.Options.AdditionalHeaders)
-            .Add(options?.AdditionalHeaders)
-            .BuildAsync()
-            .ConfigureAwait(false);
-        var response = await _client
-            .SendRequestAsync(
-                new JsonRequest
-                {
-                    Method = HttpMethod.Get,
-                    Path = string.Format(
-                        "v1/orders/{0}/test-simulation",
-                        ValueConvert.ToPathParameterString(request.OrderId)
-                    ),
-                    QueryString = _queryString,
-                    Headers = _headers,
-                    Options = options,
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-        if (response.StatusCode is >= 200 and < 400)
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                var responseData = JsonUtils.Deserialize<GetOrderTestSimulationResponse>(
-                    responseBody
-                )!;
-                return new WithRawResponse<GetOrderTestSimulationResponse>()
-                {
-                    Data = responseData,
-                    RawResponse = new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    },
-                };
-            }
-            catch (JsonException e)
-            {
-                throw new AffinityClientApiException(
-                    "Failed to deserialize response",
-                    response.StatusCode,
-                    responseBody,
-                    e,
-                    rawResponse: new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    }
-                );
-            }
-        }
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                switch (response.StatusCode)
-                {
-                    case 400:
-                        throw new BadRequestError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 401:
-                        throw new UnauthorizedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 403:
-                        throw new ForbiddenError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 404:
-                        throw new NotFoundError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 409:
-                        throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 429:
-                        throw new TooManyRequestsError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                }
-            }
-            catch (JsonException)
-            {
-                // unable to map error response, throwing generic error
-            }
-            throw new AffinityClientApiException(
-                $"Error with status code {response.StatusCode}",
-                response.StatusCode,
-                responseBody,
-                rawResponse: new Affinity.RawResponse()
-                {
-                    StatusCode = response.Raw.StatusCode,
-                    Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                    Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                }
-            );
-        }
-    }
-
-    private async Task<
-        WithRawResponse<UpdateOrderTestSimulationResponse>
-    > UpdateOrderTestSimulationAsyncCore(
-        UpdateOrderTestSimulationRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 0)
-            .MergeAdditional(options?.AdditionalQueryParameters)
-            .Build();
-        var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
-            .Add(_client.Options.Headers)
-            .Add(_client.Options.AdditionalHeaders)
-            .Add(options?.AdditionalHeaders)
-            .BuildAsync()
-            .ConfigureAwait(false);
-        var response = await _client
-            .SendRequestAsync(
-                new JsonRequest
-                {
-                    Method = HttpMethod.Put,
-                    Path = string.Format(
-                        "v1/orders/{0}/test-simulation",
-                        ValueConvert.ToPathParameterString(request.OrderId)
-                    ),
-                    Body = request,
-                    QueryString = _queryString,
-                    Headers = _headers,
-                    ContentType = "application/json",
-                    Options = options,
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-        if (response.StatusCode is >= 200 and < 400)
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                var responseData = JsonUtils.Deserialize<UpdateOrderTestSimulationResponse>(
-                    responseBody
-                )!;
-                return new WithRawResponse<UpdateOrderTestSimulationResponse>()
-                {
-                    Data = responseData,
-                    RawResponse = new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    },
-                };
-            }
-            catch (JsonException e)
-            {
-                throw new AffinityClientApiException(
-                    "Failed to deserialize response",
-                    response.StatusCode,
-                    responseBody,
-                    e,
-                    rawResponse: new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    }
-                );
-            }
-        }
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                switch (response.StatusCode)
-                {
-                    case 400:
-                        throw new BadRequestError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 401:
-                        throw new UnauthorizedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 403:
-                        throw new ForbiddenError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 404:
-                        throw new NotFoundError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 409:
-                        throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 429:
-                        throw new TooManyRequestsError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                }
-            }
-            catch (JsonException)
-            {
-                // unable to map error response, throwing generic error
-            }
-            throw new AffinityClientApiException(
-                $"Error with status code {response.StatusCode}",
-                response.StatusCode,
-                responseBody,
-                rawResponse: new Affinity.RawResponse()
-                {
-                    StatusCode = response.Raw.StatusCode,
-                    Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                    Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                }
-            );
-        }
-    }
-
-    private async Task<WithRawResponse<PreviewOrderResponse>> PreviewOrderAsyncCore(
+    private async Task<WithRawResponse<PreviewOrderResponse>> PreviewAsyncCore(
         PreviewOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -1658,7 +938,7 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<SignOrderResponse>> SignOrderAsyncCore(
+    private async Task<WithRawResponse<SignOrderResponse>> SignAsyncCore(
         SignOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -1851,7 +1131,7 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<SignAndSubmitOrderResponse>> SignAndSubmitOrderAsyncCore(
+    private async Task<WithRawResponse<SignAndSubmitOrderResponse>> SignAndSubmitAsyncCore(
         SignAndSubmitOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -2044,7 +1324,7 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<SubmitOrderResponse>> SubmitOrderAsyncCore(
+    private async Task<WithRawResponse<SubmitOrderResponse>> SubmitAsyncCore(
         SubmitOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -2237,7 +1517,7 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<RejectOrderResponse>> RejectOrderAsyncCore(
+    private async Task<WithRawResponse<RejectOrderResponse>> RejectAsyncCore(
         RejectOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -2430,597 +1710,8 @@ public partial class OrdersClient : IOrdersClient
         }
     }
 
-    private async Task<WithRawResponse<AddOrderPrescriptionResponse>> AddOrderPrescriptionAsyncCore(
-        AddOrderPrescriptionRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 0)
-            .MergeAdditional(options?.AdditionalQueryParameters)
-            .Build();
-        var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
-            .Add("Affinity-Actor-Id", request.AffinityActorId)
-            .Add("Affinity-Actor-Type", request.AffinityActorType)
-            .Add(_client.Options.Headers)
-            .Add(_client.Options.AdditionalHeaders)
-            .Add(options?.AdditionalHeaders)
-            .BuildAsync()
-            .ConfigureAwait(false);
-        var response = await _client
-            .SendRequestAsync(
-                new JsonRequest
-                {
-                    Method = HttpMethod.Post,
-                    Path = string.Format(
-                        "v1/orders/{0}/prescriptions",
-                        ValueConvert.ToPathParameterString(request.OrderId)
-                    ),
-                    Body = request,
-                    QueryString = _queryString,
-                    Headers = _headers,
-                    ContentType = "application/json",
-                    Options = options,
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-        if (response.StatusCode is >= 200 and < 400)
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                var responseData = JsonUtils.Deserialize<AddOrderPrescriptionResponse>(
-                    responseBody
-                )!;
-                return new WithRawResponse<AddOrderPrescriptionResponse>()
-                {
-                    Data = responseData,
-                    RawResponse = new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    },
-                };
-            }
-            catch (JsonException e)
-            {
-                throw new AffinityClientApiException(
-                    "Failed to deserialize response",
-                    response.StatusCode,
-                    responseBody,
-                    e,
-                    rawResponse: new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    }
-                );
-            }
-        }
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                switch (response.StatusCode)
-                {
-                    case 400:
-                        throw new BadRequestError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 401:
-                        throw new UnauthorizedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 403:
-                        throw new ForbiddenError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 404:
-                        throw new NotFoundError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 409:
-                        throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 429:
-                        throw new TooManyRequestsError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 503:
-                        throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                }
-            }
-            catch (JsonException)
-            {
-                // unable to map error response, throwing generic error
-            }
-            throw new AffinityClientApiException(
-                $"Error with status code {response.StatusCode}",
-                response.StatusCode,
-                responseBody,
-                rawResponse: new Affinity.RawResponse()
-                {
-                    StatusCode = response.Raw.StatusCode,
-                    Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                    Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                }
-            );
-        }
-    }
-
-    private async Task<
-        WithRawResponse<UpdateOrderPrescriptionResponse>
-    > UpdateOrderPrescriptionAsyncCore(
-        UpdateOrderPrescriptionRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 0)
-            .MergeAdditional(options?.AdditionalQueryParameters)
-            .Build();
-        var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
-            .Add("Affinity-Actor-Id", request.AffinityActorId)
-            .Add("Affinity-Actor-Type", request.AffinityActorType)
-            .Add(_client.Options.Headers)
-            .Add(_client.Options.AdditionalHeaders)
-            .Add(options?.AdditionalHeaders)
-            .BuildAsync()
-            .ConfigureAwait(false);
-        var response = await _client
-            .SendRequestAsync(
-                new JsonRequest
-                {
-                    Method = HttpMethodExtensions.Patch,
-                    Path = string.Format(
-                        "v1/orders/{0}/prescriptions/{1}",
-                        ValueConvert.ToPathParameterString(request.OrderId),
-                        ValueConvert.ToPathParameterString(request.PrescriptionId)
-                    ),
-                    Body = request,
-                    QueryString = _queryString,
-                    Headers = _headers,
-                    ContentType = "application/json",
-                    Options = options,
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-        if (response.StatusCode is >= 200 and < 400)
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                var responseData = JsonUtils.Deserialize<UpdateOrderPrescriptionResponse>(
-                    responseBody
-                )!;
-                return new WithRawResponse<UpdateOrderPrescriptionResponse>()
-                {
-                    Data = responseData,
-                    RawResponse = new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    },
-                };
-            }
-            catch (JsonException e)
-            {
-                throw new AffinityClientApiException(
-                    "Failed to deserialize response",
-                    response.StatusCode,
-                    responseBody,
-                    e,
-                    rawResponse: new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    }
-                );
-            }
-        }
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                switch (response.StatusCode)
-                {
-                    case 400:
-                        throw new BadRequestError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 401:
-                        throw new UnauthorizedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 403:
-                        throw new ForbiddenError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 404:
-                        throw new NotFoundError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 409:
-                        throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 429:
-                        throw new TooManyRequestsError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 503:
-                        throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                }
-            }
-            catch (JsonException)
-            {
-                // unable to map error response, throwing generic error
-            }
-            throw new AffinityClientApiException(
-                $"Error with status code {response.StatusCode}",
-                response.StatusCode,
-                responseBody,
-                rawResponse: new Affinity.RawResponse()
-                {
-                    StatusCode = response.Raw.StatusCode,
-                    Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                    Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                }
-            );
-        }
-    }
-
-    private async Task<WithRawResponse<CreateOrderBatchResponse>> CreateOrderBatchAsyncCore(
-        CreateOrderBatchRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 0)
-            .MergeAdditional(options?.AdditionalQueryParameters)
-            .Build();
-        var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey)
-            .Add("Affinity-Actor-Id", request.AffinityActorId)
-            .Add("Affinity-Actor-Type", request.AffinityActorType)
-            .Add(_client.Options.Headers)
-            .Add(_client.Options.AdditionalHeaders)
-            .Add(options?.AdditionalHeaders)
-            .BuildAsync()
-            .ConfigureAwait(false);
-        var response = await _client
-            .SendRequestAsync(
-                new JsonRequest
-                {
-                    Method = HttpMethod.Post,
-                    Path = "v1/order-batches",
-                    Body = request,
-                    QueryString = _queryString,
-                    Headers = _headers,
-                    ContentType = "application/json",
-                    Options = options,
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-        if (response.StatusCode is >= 200 and < 400)
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                var responseData = JsonUtils.Deserialize<CreateOrderBatchResponse>(responseBody)!;
-                return new WithRawResponse<CreateOrderBatchResponse>()
-                {
-                    Data = responseData,
-                    RawResponse = new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    },
-                };
-            }
-            catch (JsonException e)
-            {
-                throw new AffinityClientApiException(
-                    "Failed to deserialize response",
-                    response.StatusCode,
-                    responseBody,
-                    e,
-                    rawResponse: new Affinity.RawResponse()
-                    {
-                        StatusCode = response.Raw.StatusCode,
-                        Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                        Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                    }
-                );
-            }
-        }
-        {
-            var responseBody = await response
-                .Raw.Content.ReadAsStringAsync(cancellationToken)
-                .ConfigureAwait(false);
-            try
-            {
-                switch (response.StatusCode)
-                {
-                    case 400:
-                        throw new BadRequestError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 401:
-                        throw new UnauthorizedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 403:
-                        throw new ForbiddenError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 404:
-                        throw new NotFoundError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 409:
-                        throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 429:
-                        throw new TooManyRequestsError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                    case 503:
-                        throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
-                }
-            }
-            catch (JsonException)
-            {
-                // unable to map error response, throwing generic error
-            }
-            throw new AffinityClientApiException(
-                $"Error with status code {response.StatusCode}",
-                response.StatusCode,
-                responseBody,
-                rawResponse: new Affinity.RawResponse()
-                {
-                    StatusCode = response.Raw.StatusCode,
-                    Url = response.Raw.RequestMessage?.RequestUri ?? new Uri("about:blank"),
-                    Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                }
-            );
-        }
-    }
-
     /// <example><code>
-    /// await client.Orders.ListOrdersAsync(
+    /// await client.Orders.ListAsync(
     ///     new ListOrdersRequest
     ///     {
     ///         EndingBefore = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -3031,14 +1722,14 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<ListOrdersResponse> ListOrdersAsync(
+    public WithRawResponseTask<ListOrdersResponse> ListAsync(
         ListOrdersRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<ListOrdersResponse>(
-            ListOrdersAsyncCore(request, options, cancellationToken)
+            ListAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -3046,7 +1737,7 @@ public partial class OrdersClient : IOrdersClient
     /// Creates one unsigned order with 1–20 prescriptions for one patient in one practice. Supply patientId or patient; inline patient creation requires patients:write. Prescriber is optional: select by npi, provider id, or integration-scoped externalId, or leave the draft unassigned until signing. First-use prescriber registration requires team:write. Legacy userId is supported but cannot be combined with prescriber. Idempotency-Key is required.
     /// </summary>
     /// <example><code>
-    /// await client.Orders.CreateOrderAsync(
+    /// await client.Orders.CreateAsync(
     ///     new CreateOrderRequest
     ///     {
     ///         IdempotencyKey = "Idempotency-Key",
@@ -3067,30 +1758,28 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<CreateOrderResponse> CreateOrderAsync(
+    public WithRawResponseTask<CreateOrderResponse> CreateAsync(
         CreateOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<CreateOrderResponse>(
-            CreateOrderAsyncCore(request, options, cancellationToken)
+            CreateAsyncCore(request, options, cancellationToken)
         );
     }
 
     /// <example><code>
-    /// await client.Orders.GetOrderAsync(
-    ///     new GetOrderRequest { OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc" }
-    /// );
+    /// await client.Orders.GetAsync(new GetOrdersRequest { OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc" });
     /// </code></example>
-    public WithRawResponseTask<GetOrderResponse> GetOrderAsync(
-        GetOrderRequest request,
+    public WithRawResponseTask<GetOrderResponse> GetAsync(
+        GetOrdersRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<GetOrderResponse>(
-            GetOrderAsyncCore(request, options, cancellationToken)
+            GetAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -3098,7 +1787,7 @@ public partial class OrdersClient : IOrdersClient
     /// Requests cancellation. HTTP 200 means the request was handled; check cancellation.status for confirmed, pending, partial, or failed. Only confirmed means the entire order is cancelled. Shipment possession makes a fulfillment cancellation too late.
     /// </summary>
     /// <example><code>
-    /// await client.Orders.CancelOrderAsync(
+    /// await client.Orders.CancelAsync(
     ///     new CancelOrderRequest
     ///     {
     ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -3107,104 +1796,14 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<CancelOrderResponse> CancelOrderAsync(
+    public WithRawResponseTask<CancelOrderResponse> CancelAsync(
         CancelOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<CancelOrderResponse>(
-            CancelOrderAsyncCore(request, options, cancellationToken)
-        );
-    }
-
-    /// <summary>
-    /// Acknowledge, retry, contact, or resolve an order exception in the credential's Test/Live mode. assign_to_me requires a signed-in dashboard user; API keys receive 400 and may use acknowledge instead. Actor headers do not create a dashboard assignee.
-    /// </summary>
-    /// <example><code>
-    /// await client.Orders.ActOnOrderExceptionAsync(
-    ///     new ActOnOrderExceptionRequest
-    ///     {
-    ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         ExceptionId = "fex_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         IdempotencyKey = "Idempotency-Key",
-    ///         Action = ActOnOrderExceptionRequestAction.Acknowledge,
-    ///     }
-    /// );
-    /// </code></example>
-    public WithRawResponseTask<ActOnOrderExceptionResponse> ActOnOrderExceptionAsync(
-        ActOnOrderExceptionRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return new WithRawResponseTask<ActOnOrderExceptionResponse>(
-            ActOnOrderExceptionAsyncCore(request, options, cancellationToken)
-        );
-    }
-
-    /// <example><code>
-    /// await client.Orders.ListOrderEventsAsync(
-    ///     new ListOrderEventsRequest
-    ///     {
-    ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         EndingBefore = "evt_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         StartingAfter = "evt_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///     }
-    /// );
-    /// </code></example>
-    public WithRawResponseTask<ListOrderEventsResponse> ListOrderEventsAsync(
-        ListOrderEventsRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return new WithRawResponseTask<ListOrderEventsResponse>(
-            ListOrderEventsAsyncCore(request, options, cancellationToken)
-        );
-    }
-
-    /// <summary>
-    /// Requires orders:write. Available only in Test mode.
-    /// </summary>
-    /// <example><code>
-    /// await client.Orders.GetOrderTestSimulationAsync(
-    ///     new GetOrderTestSimulationRequest { OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc" }
-    /// );
-    /// </code></example>
-    public WithRawResponseTask<GetOrderTestSimulationResponse> GetOrderTestSimulationAsync(
-        GetOrderTestSimulationRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return new WithRawResponseTask<GetOrderTestSimulationResponse>(
-            GetOrderTestSimulationAsyncCore(request, options, cancellationToken)
-        );
-    }
-
-    /// <summary>
-    /// Requires orders:write and Idempotency-Key. Configure before submission or queue a valid pharmacy event in manual mode. Events use normal order history and Test webhooks. Live requests are rejected.
-    /// </summary>
-    /// <example><code>
-    /// await client.Orders.UpdateOrderTestSimulationAsync(
-    ///     new UpdateOrderTestSimulationRequest
-    ///     {
-    ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         IdempotencyKey = "Idempotency-Key",
-    ///         Mode = UpdateOrderTestSimulationRequestMode.Automatic,
-    ///         Scenario = UpdateOrderTestSimulationRequestScenario.Successful,
-    ///     }
-    /// );
-    /// </code></example>
-    public WithRawResponseTask<UpdateOrderTestSimulationResponse> UpdateOrderTestSimulationAsync(
-        UpdateOrderTestSimulationRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return new WithRawResponseTask<UpdateOrderTestSimulationResponse>(
-            UpdateOrderTestSimulationAsyncCore(request, options, cancellationToken)
+            CancelAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -3212,7 +1811,7 @@ public partial class OrdersClient : IOrdersClient
     /// Requires orders:write and catalog:read. Supply exactly one of patientId, patientExternalId, or inline patient details. External-ID lookup additionally requires patients:read; inline details require patients:write. Resolves defaults and explicit edits for 1–20 prescriptions. Reuses stored patient details when identifiers match; otherwise previews inline details without creating a patient. Complete previews contain an orders.create input. Does not create records, reserve prices, sign, charge or transmit. No idempotency key is required. Creation and signing recheck current requirements.
     /// </summary>
     /// <example><code>
-    /// await client.Orders.PreviewOrderAsync(
+    /// await client.Orders.PreviewAsync(
     ///     new PreviewOrderRequest
     ///     {
     ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -3226,14 +1825,14 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<PreviewOrderResponse> PreviewOrderAsync(
+    public WithRawResponseTask<PreviewOrderResponse> PreviewAsync(
         PreviewOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<PreviewOrderResponse>(
-            PreviewOrderAsyncCore(request, options, cancellationToken)
+            PreviewAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -3241,7 +1840,7 @@ public partial class OrdersClient : IOrdersClient
     /// Requires orders:sign, Idempotency-Key, signatureAttestation, and expectedRevision from the reviewed order. Existing integrations may send expectedVersions instead; supply exactly one. A stale revision returns 409 and requires renewed clinician review. Select prescriber by npi, provider id, or integration-scoped externalId, or inherit the draft's prescriber. First-use registration requires team:write. Actor headers are optional audit metadata with prescriber; legacy userId requires matching clinician actor headers. Signing does not submit to a pharmacy.
     /// </summary>
     /// <example><code>
-    /// await client.Orders.SignOrderAsync(
+    /// await client.Orders.SignAsync(
     ///     new SignOrderRequest
     ///     {
     ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -3251,14 +1850,14 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<SignOrderResponse> SignOrderAsync(
+    public WithRawResponseTask<SignOrderResponse> SignAsync(
         SignOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<SignOrderResponse>(
-            SignOrderAsyncCore(request, options, cancellationToken)
+            SignAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -3266,7 +1865,7 @@ public partial class OrdersClient : IOrdersClient
     /// Requires orders:sign, Idempotency-Key, signatureAttestation, and expectedRevision from the reviewed order. Existing integrations may send expectedVersions instead; supply exactly one. A stale revision returns 409 and requires renewed clinician review. Select prescriber by npi, provider id, or externalId, or inherit the draft's prescriber. First-use registration requires team:write. Actor headers are optional with prescriber; legacy userId requires matching clinician actor headers. Signs the complete order, then attempts each submission. Signing remains committed if submission fails. Replay the same key after an uncertain response; retry reported submission failures through Submit order with a new key. Submitted means queued, not pharmacy acceptance.
     /// </summary>
     /// <example><code>
-    /// await client.Orders.SignAndSubmitOrderAsync(
+    /// await client.Orders.SignAndSubmitAsync(
     ///     new SignAndSubmitOrderRequest
     ///     {
     ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -3276,14 +1875,14 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<SignAndSubmitOrderResponse> SignAndSubmitOrderAsync(
+    public WithRawResponseTask<SignAndSubmitOrderResponse> SignAndSubmitAsync(
         SignAndSubmitOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<SignAndSubmitOrderResponse>(
-            SignAndSubmitOrderAsyncCore(request, options, cancellationToken)
+            SignAndSubmitAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -3291,7 +1890,7 @@ public partial class OrdersClient : IOrdersClient
     /// Requires orders:sign and Idempotency-Key. Queues signed prescriptions after rechecking authorization, signature integrity, billing, and fulfillment eligibility. Track pharmacy acceptance through order reads and webhooks. After a partial failure, retry submission with a new idempotency key; already queued prescriptions are not duplicated.
     /// </summary>
     /// <example><code>
-    /// await client.Orders.SubmitOrderAsync(
+    /// await client.Orders.SubmitAsync(
     ///     new SubmitOrderRequest
     ///     {
     ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -3300,14 +1899,14 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<SubmitOrderResponse> SubmitOrderAsync(
+    public WithRawResponseTask<SubmitOrderResponse> SubmitAsync(
         SubmitOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<SubmitOrderResponse>(
-            SubmitOrderAsyncCore(request, options, cancellationToken)
+            SubmitAsyncCore(request, options, cancellationToken)
         );
     }
 
@@ -3315,7 +1914,7 @@ public partial class OrdersClient : IOrdersClient
     /// Requires orders:sign and Idempotency-Key. Select a prescriber or inherit the draft's prescriber. Legacy userId requires matching clinician actor headers. Supply expectedRevision from the reviewed order, or expectedVersions for existing integrations. Permanently rejects the complete unsigned order after checking its revision.
     /// </summary>
     /// <example><code>
-    /// await client.Orders.RejectOrderAsync(
+    /// await client.Orders.RejectAsync(
     ///     new RejectOrderRequest
     ///     {
     ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -3325,127 +1924,14 @@ public partial class OrdersClient : IOrdersClient
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<RejectOrderResponse> RejectOrderAsync(
+    public WithRawResponseTask<RejectOrderResponse> RejectAsync(
         RejectOrderRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         return new WithRawResponseTask<RejectOrderResponse>(
-            RejectOrderAsyncCore(request, options, cancellationToken)
-        );
-    }
-
-    /// <summary>
-    /// Requires orders:write, Idempotency-Key and expectedRevision from the order being edited. Existing integrations may send expectedVersions instead; supply exactly one. Adds a complete prescription to an unsigned Order and returns all new versions. Omitted actor context defaults to the authenticated service account as a system actor. Patient and prescriber attribution stay fixed. Signed orders cannot be amended through this endpoint. Signing and submission require orders:sign through their separate endpoints.
-    /// </summary>
-    /// <example><code>
-    /// await client.Orders.AddOrderPrescriptionAsync(
-    ///     new AddOrderPrescriptionRequest
-    ///     {
-    ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         IdempotencyKey = "Idempotency-Key",
-    ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         Prescription = new AddOrderPrescriptionRequestPrescription
-    ///         {
-    ///             DaysSupply = 1,
-    ///             Dispensing = new AddOrderPrescriptionRequestPrescriptionDispensing(),
-    ///             Directions = "directions",
-    ///             MedicationId = "cat_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///             Quantity = AddOrderPrescriptionRequestPrescriptionQuantityOne.Infinity,
-    ///             QuantityUnit = "quantityUnit",
-    ///             Refills = 1,
-    ///         },
-    ///     }
-    /// );
-    /// </code></example>
-    public WithRawResponseTask<AddOrderPrescriptionResponse> AddOrderPrescriptionAsync(
-        AddOrderPrescriptionRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return new WithRawResponseTask<AddOrderPrescriptionResponse>(
-            AddOrderPrescriptionAsyncCore(request, options, cancellationToken)
-        );
-    }
-
-    /// <summary>
-    /// Requires orders:write, Idempotency-Key and expectedRevision from the order being edited. Existing integrations may send expectedVersions instead; supply exactly one. Replaces one prescription with complete medication instructions and returns all new versions. Omitted actor context defaults to the authenticated service account as a system actor. Patient and prescriber attribution stay fixed. Signed orders cannot be amended through this endpoint. Signing and submission require orders:sign through their separate endpoints.
-    /// </summary>
-    /// <example><code>
-    /// await client.Orders.UpdateOrderPrescriptionAsync(
-    ///     new UpdateOrderPrescriptionRequest
-    ///     {
-    ///         OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         PrescriptionId = "rx_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         IdempotencyKey = "Idempotency-Key",
-    ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         Prescription = new UpdateOrderPrescriptionRequestPrescription
-    ///         {
-    ///             DaysSupply = 1,
-    ///             Dispensing = new UpdateOrderPrescriptionRequestPrescriptionDispensing(),
-    ///             Directions = "directions",
-    ///             MedicationId = "cat_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///             Quantity = UpdateOrderPrescriptionRequestPrescriptionQuantityOne.Infinity,
-    ///             QuantityUnit = "quantityUnit",
-    ///             Refills = 1,
-    ///         },
-    ///     }
-    /// );
-    /// </code></example>
-    public WithRawResponseTask<UpdateOrderPrescriptionResponse> UpdateOrderPrescriptionAsync(
-        UpdateOrderPrescriptionRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return new WithRawResponseTask<UpdateOrderPrescriptionResponse>(
-            UpdateOrderPrescriptionAsyncCore(request, options, cancellationToken)
-        );
-    }
-
-    /// <summary>
-    /// Creates 1–20 orders for distinct patients in one practice, each with 1–20 prescriptions. Each accepts patientId or inline patient details. Orders and newly created patients commit atomically; any failure saves none. Requires orders:write and Idempotency-Key; inline patients also require patients:write. Omitted actor context defaults to the authenticated service account as a system actor. Sign and submit each resulting order separately using orders:sign.
-    /// </summary>
-    /// <example><code>
-    /// await client.Orders.CreateOrderBatchAsync(
-    ///     new CreateOrderBatchRequest
-    ///     {
-    ///         IdempotencyKey = "Idempotency-Key",
-    ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         Orders = new List&lt;CreateOrderBatchRequestOrdersItem&gt;()
-    ///         {
-    ///             new CreateOrderBatchRequestOrdersItem
-    ///             {
-    ///                 Prescriptions = new List&lt;CreateOrderBatchRequestOrdersItemPrescriptionsItem&gt;()
-    ///                 {
-    ///                     new CreateOrderBatchRequestOrdersItemPrescriptionsItem
-    ///                     {
-    ///                         DaysSupply = 1,
-    ///                         Dispensing =
-    ///                             new CreateOrderBatchRequestOrdersItemPrescriptionsItemDispensing(),
-    ///                         Directions = "directions",
-    ///                         MedicationId = "cat_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///                         Quantity =
-    ///                             CreateOrderBatchRequestOrdersItemPrescriptionsItemQuantityOne.Infinity,
-    ///                         QuantityUnit = "quantityUnit",
-    ///                         Refills = 1,
-    ///                     },
-    ///                 },
-    ///             },
-    ///         },
-    ///     }
-    /// );
-    /// </code></example>
-    public WithRawResponseTask<CreateOrderBatchResponse> CreateOrderBatchAsync(
-        CreateOrderBatchRequest request,
-        RequestOptions? options = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return new WithRawResponseTask<CreateOrderBatchResponse>(
-            CreateOrderBatchAsyncCore(request, options, cancellationToken)
+            RejectAsyncCore(request, options, cancellationToken)
         );
     }
 }

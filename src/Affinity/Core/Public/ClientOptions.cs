@@ -30,7 +30,7 @@ public partial class ClientOptions
 #else
         set;
 #endif
-    } = new HttpClient();
+    } = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
 
     /// <summary>
     /// Additional headers to be sent with HTTP requests.
@@ -53,7 +53,7 @@ public partial class ClientOptions
 #else
         set;
 #endif
-    } = 2;
+    } = 0;
 
     /// <summary>
     /// The timeout for the request.
@@ -64,7 +64,7 @@ public partial class ClientOptions
 #else
         set;
 #endif
-    } = TimeSpan.FromMilliseconds(30000);
+    } = TimeSpan.FromSeconds(60);
 
     /// <summary>
     /// Clones this and returns a new instance
