@@ -14,7 +14,7 @@ Set `AFFINITY_API_KEY` to a Test API key on your server. The key selects Test or
 ```csharp
 using Affinity;
 
-var api = new AffinityClient(apiKey: Environment.GetEnvironmentVariable("AFFINITY_API_KEY")!);
+var api = new AffinityClient(Environment.GetEnvironmentVariable("AFFINITY_API_KEY")!);
 ```
 
 ## With a practice key
@@ -29,20 +29,9 @@ var patient = await api.Patients.GetAsync(patientId);
 var items = await api.Catalog.Items.ListAsync(new CatalogItemListParams { Limit = 20 });
 ```
 
-For a recoverable update, pass your persisted key without a practice ID. `job` is your application's saved workflow record.
-
-```csharp
-await api.Patients.UpdateAsync(
-    patientId,
-    new PatientUpdateParams { Email = "alex@example.com" },
-    new RequestOptions { IdempotencyKey = job.UpdatePatientKey }
-);
-```
-
 ## With a platform key
 
 Pass the target practice with each practice-scoped request. Keep record data separate from request context and idempotency options.
-The update key below comes from your persisted workflow job.
 
 ```csharp
 var options = new RequestOptions { PracticeId = practiceId };
@@ -54,7 +43,6 @@ await api.Patients.UpdateAsync(
     new PatientUpdateParams { Email = "alex@example.com" },
     new RequestOptions {
         PracticeId = practiceId,
-        IdempotencyKey = job.UpdatePatientKey,
     }
 );
 ```
@@ -66,6 +54,7 @@ A conflicting practice ID produces an error. Scoping never grants access to anot
 
 ```csharp
 var practice = api.ForPractice(practiceId);
+
 var patients = await practice.Patients.ListAsync(new PatientListParams { Limit = 20 });
 var items = await practice.Catalog.Items.ListAsync(new CatalogItemListParams { Limit = 20 });
 ```
@@ -82,34 +71,35 @@ var patient = await practice.Patients.CreateAsync(new PatientCreateParams {
     Name = new PatientName { First = "Alex", Last = "Example" },
     DateOfBirth = "1990-01-01",
 });
+
 var saved = await practice.Patients.GetAsync(patient.Id);
 await practice.Patients.UpdateAsync(patient.Id, new PatientUpdateParams {
     Email = "alex@example.com",
 });
+
 await practice.Patients.UpdateAsync(patient.Id, new PatientUpdateParams {
     Status = "archived",
 });
 ```
 
-Archive patients whose records you need to retain. Permanent deletion is available only for patients without order history and requires an explicit key.
+Archive patients whose records you need to retain. Permanent deletion is available only for patients without order history. No explicit idempotency key is needed.
 
 ```csharp
-await practice.Patients.DeleteAsync(patientId, new RequestOptions {
-    IdempotencyKey = job.DeletePatientKey,
-});
+await practice.Patients.DeleteAsync(patientId);
 ```
 
 ## Create an order draft
 
 `draft` is your application's prepared prescription data, using catalog and prescribing options from this practice.
 An order contains 1–20 complete prescriptions for one patient. This example creates an unsigned draft.
+It shows a platform call without a scoped client: practice context and the persisted key belong together in request options.
 
 `job` is your persisted workflow record. Generate and save a unique key for each action before making its first request.
 
 ```csharp
-var order = await practice.Orders.CreateAsync(
+var order = await api.Orders.CreateAsync(
     new OrderCreateParams { PatientId = patientId, Prescriptions = draft.Prescriptions },
-    new RequestOptions { IdempotencyKey = job.CreateOrderKey }
+    new RequestOptions { PracticeId = practiceId, IdempotencyKey = job.CreateOrderKey }
 );
 ```
 
@@ -129,6 +119,7 @@ await practice.Orders.SignAsync(
     },
     new RequestOptions { IdempotencyKey = job.SignOrderKey }
 );
+
 var submission = await practice.Orders.SubmitAsync(orderId,
     new RequestOptions { IdempotencyKey = job.SubmitOrderKey });
 ```
