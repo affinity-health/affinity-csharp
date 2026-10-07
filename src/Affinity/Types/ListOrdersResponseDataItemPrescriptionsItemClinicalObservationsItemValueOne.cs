@@ -11,11 +11,11 @@ namespace Affinity;
 public readonly record struct ListOrdersResponseDataItemPrescriptionsItemClinicalObservationsItemValueOne
     : IStringEnum
 {
-    public static readonly ListOrdersResponseDataItemPrescriptionsItemClinicalObservationsItemValueOne Infinity =
-        new(Values.Infinity);
-
     public static readonly ListOrdersResponseDataItemPrescriptionsItemClinicalObservationsItemValueOne NaN =
         new(Values.NaN);
+
+    public static readonly ListOrdersResponseDataItemPrescriptionsItemClinicalObservationsItemValueOne Infinity =
+        new(Values.Infinity);
 
     public ListOrdersResponseDataItemPrescriptionsItemClinicalObservationsItemValueOne(string value)
     {
@@ -130,8 +130,8 @@ public readonly record struct ListOrdersResponseDataItemPrescriptionsItemClinica
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

@@ -12,6 +12,12 @@ public record RetrievePrescribingOptionsResponseCatalogCatalogDetails : IJsonOnD
     private readonly IDictionary<string, JsonElement> _extensionData =
         new Dictionary<string, JsonElement>();
 
+    /// <summary>
+    /// Confirmed physical containers and contents. Empty or absent means container count cannot be inferred from dispense quantity.
+    /// </summary>
+    [JsonPropertyName("packageComponents")]
+    public IEnumerable<RetrievePrescribingOptionsResponseCatalogCatalogDetailsPackageComponentsItem>? PackageComponents { get; set; }
+
     [JsonPropertyName("attributes")]
     public Dictionary<string, OneOf<string, IEnumerable<string>>> Attributes { get; set; } =
         new Dictionary<string, OneOf<string, IEnumerable<string>>>();

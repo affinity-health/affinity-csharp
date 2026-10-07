@@ -13,6 +13,7 @@ public partial class CatalogClient : ICatalogClient
         ShippingOptions = new ShippingOptionsClient(_client);
         PrescribingOptions = new PrescribingOptionsClient(_client);
         SellingPrices = new SellingPricesClient(_client);
+        PresentationPrices = new PresentationPricesClient(_client);
     }
 
     public IItemsClient Items { get; }
@@ -22,4 +23,6 @@ public partial class CatalogClient : ICatalogClient
     public IPrescribingOptionsClient PrescribingOptions { get; }
 
     public ISellingPricesClient SellingPrices { get; }
+
+    public IPresentationPricesClient PresentationPrices { get; }
 }

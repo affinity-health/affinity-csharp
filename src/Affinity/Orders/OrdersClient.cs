@@ -1750,7 +1750,7 @@ public partial class OrdersClient : IOrdersClient
     ///                 Dispensing = new CreateOrderRequestPrescriptionsItemDispensing(),
     ///                 Directions = "directions",
     ///                 MedicationId = "cat_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///                 Quantity = CreateOrderRequestPrescriptionsItemQuantityOne.Infinity,
+    ///                 Quantity = CreateOrderRequestPrescriptionsItemQuantityOne.NaN,
     ///                 QuantityUnit = "quantityUnit",
     ///                 Refills = 1,
     ///             },

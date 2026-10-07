@@ -5,7 +5,7 @@ using global::System.Text.Json.Serialization;
 namespace Affinity;
 
 [Serializable]
-public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit
+public record PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItemQuantityPricesItem
     : IJsonOnDeserialized
 {
     [JsonExtensionData]
@@ -13,10 +13,10 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit
         new Dictionary<string, JsonElement>();
 
     [JsonPropertyName("quantity")]
-    public required PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity Quantity { get; set; }
+    public required string Quantity { get; set; }
 
-    [JsonPropertyName("unit")]
-    public required string Unit { get; set; }
+    [JsonPropertyName("amountCents")]
+    public required int AmountCents { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

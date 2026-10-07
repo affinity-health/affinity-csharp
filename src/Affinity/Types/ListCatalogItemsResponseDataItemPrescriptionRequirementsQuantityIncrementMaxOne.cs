@@ -11,11 +11,11 @@ namespace Affinity;
 public readonly record struct ListCatalogItemsResponseDataItemPrescriptionRequirementsQuantityIncrementMaxOne
     : IStringEnum
 {
-    public static readonly ListCatalogItemsResponseDataItemPrescriptionRequirementsQuantityIncrementMaxOne Infinity =
-        new(Values.Infinity);
-
     public static readonly ListCatalogItemsResponseDataItemPrescriptionRequirementsQuantityIncrementMaxOne NaN =
         new(Values.NaN);
+
+    public static readonly ListCatalogItemsResponseDataItemPrescriptionRequirementsQuantityIncrementMaxOne Infinity =
+        new(Values.Infinity);
 
     public ListCatalogItemsResponseDataItemPrescriptionRequirementsQuantityIncrementMaxOne(
         string value
@@ -132,8 +132,8 @@ public readonly record struct ListCatalogItemsResponseDataItemPrescriptionRequir
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

@@ -11,12 +11,12 @@ namespace Affinity;
 public readonly record struct SignAndSubmitOrderResponsePrescriptionsItemErrorStatusOne
     : IStringEnum
 {
-    public static readonly SignAndSubmitOrderResponsePrescriptionsItemErrorStatusOne Infinity = new(
-        Values.Infinity
-    );
-
     public static readonly SignAndSubmitOrderResponsePrescriptionsItemErrorStatusOne NaN = new(
         Values.NaN
+    );
+
+    public static readonly SignAndSubmitOrderResponsePrescriptionsItemErrorStatusOne Infinity = new(
+        Values.Infinity
     );
 
     public SignAndSubmitOrderResponsePrescriptionsItemErrorStatusOne(string value)
@@ -124,8 +124,8 @@ public readonly record struct SignAndSubmitOrderResponsePrescriptionsItemErrorSt
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

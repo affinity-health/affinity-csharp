@@ -6,4 +6,5 @@ public partial interface ICatalogClient
     public IShippingOptionsClient ShippingOptions { get; }
     public IPrescribingOptionsClient PrescribingOptions { get; }
     public ISellingPricesClient SellingPrices { get; }
+    public IPresentationPricesClient PresentationPrices { get; }
 }

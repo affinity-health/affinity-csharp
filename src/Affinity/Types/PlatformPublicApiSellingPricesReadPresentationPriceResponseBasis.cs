@@ -8,11 +8,13 @@ using global::System.Text.Json.Serialization;
 
 namespace Affinity;
 
-[JsonConverter(typeof(PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.JsonConverter))]
+[JsonConverter(
+    typeof(PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.JsonConverter)
+)]
 [Serializable]
-public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
+public record PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis
 {
-    internal PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
+    internal PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
         string type,
         object? value
     )
@@ -22,10 +24,10 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     }
 
     /// <summary>
-    /// Create an instance of PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis with <see cref="PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Item"/>.
+    /// Create an instance of PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis with <see cref="PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Item"/>.
     /// </summary>
-    public PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Item value
+    public PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Item value
     )
     {
         Kind = "item";
@@ -33,10 +35,10 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     }
 
     /// <summary>
-    /// Create an instance of PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis with <see cref="PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Package"/>.
+    /// Create an instance of PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis with <see cref="PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Package"/>.
     /// </summary>
-    public PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Package value
+    public PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Package value
     )
     {
         Kind = "package";
@@ -44,10 +46,10 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     }
 
     /// <summary>
-    /// Create an instance of PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis with <see cref="PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Unit"/>.
+    /// Create an instance of PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis with <see cref="PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Unit"/>.
     /// </summary>
-    public PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Unit value
+    public PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Unit value
     )
     {
         Kind = "unit";
@@ -81,45 +83,52 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     public bool IsUnit => Kind == "unit";
 
     /// <summary>
-    /// Returns the value as a <see cref="Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem"/> if <see cref="Kind"/> is 'item', otherwise throws an exception.
+    /// Returns the value as a <see cref="Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem"/> if <see cref="Kind"/> is 'item', otherwise throws an exception.
     /// </summary>
     /// <exception cref="Exception">Thrown when <see cref="Kind"/> is not 'item'.</exception>
-    public Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem AsItem() =>
+    public Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem AsItem() =>
         IsItem
-            ? (Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem)Value!
+            ? (Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem)Value!
             : throw new global::System.Exception(
-                "PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Kind is not 'item'"
+                "PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Kind is not 'item'"
             );
 
     /// <summary>
-    /// Returns the value as a <see cref="Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage"/> if <see cref="Kind"/> is 'package', otherwise throws an exception.
+    /// Returns the value as a <see cref="Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage"/> if <see cref="Kind"/> is 'package', otherwise throws an exception.
     /// </summary>
     /// <exception cref="Exception">Thrown when <see cref="Kind"/> is not 'package'.</exception>
-    public Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage AsPackage() =>
+    public Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage AsPackage() =>
         IsPackage
-            ? (Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage)Value!
+            ? (Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage)
+                Value!
             : throw new global::System.Exception(
-                "PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Kind is not 'package'"
+                "PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Kind is not 'package'"
             );
 
     /// <summary>
-    /// Returns the value as a <see cref="Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit"/> if <see cref="Kind"/> is 'unit', otherwise throws an exception.
+    /// Returns the value as a <see cref="Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit"/> if <see cref="Kind"/> is 'unit', otherwise throws an exception.
     /// </summary>
     /// <exception cref="Exception">Thrown when <see cref="Kind"/> is not 'unit'.</exception>
-    public Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit AsUnit() =>
+    public Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit AsUnit() =>
         IsUnit
-            ? (Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit)Value!
+            ? (Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit)Value!
             : throw new global::System.Exception(
-                "PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Kind is not 'unit'"
+                "PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Kind is not 'unit'"
             );
 
     public T Match<T>(
-        Func<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem, T> onItem,
         Func<
-            Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage,
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem,
+            T
+        > onItem,
+        Func<
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage,
             T
         > onPackage,
-        Func<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit, T> onUnit,
+        Func<
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit,
+            T
+        > onUnit,
         Func<string, object?, T> onUnknown_
     )
     {
@@ -133,9 +142,9 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     }
 
     public void Visit(
-        Action<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem> onItem,
-        Action<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage> onPackage,
-        Action<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit> onUnit,
+        Action<Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem> onItem,
+        Action<Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage> onPackage,
+        Action<Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit> onUnit,
         Action<string, object?> onUnknown_
     )
     {
@@ -157,15 +166,15 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     }
 
     /// <summary>
-    /// Attempts to cast the value to a <see cref="Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem"/> and returns true if successful.
+    /// Attempts to cast the value to a <see cref="Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem"/> and returns true if successful.
     /// </summary>
     public bool TryAsItem(
-        out Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem? value
+        out Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem? value
     )
     {
         if (Kind == "item")
         {
-            value = (Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem)
+            value = (Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem)
                 Value!;
             return true;
         }
@@ -174,16 +183,17 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     }
 
     /// <summary>
-    /// Attempts to cast the value to a <see cref="Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage"/> and returns true if successful.
+    /// Attempts to cast the value to a <see cref="Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage"/> and returns true if successful.
     /// </summary>
     public bool TryAsPackage(
-        out Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage? value
+        out Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage? value
     )
     {
         if (Kind == "package")
         {
-            value = (Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage)
-                Value!;
+            value =
+                (Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage)
+                    Value!;
             return true;
         }
         value = null;
@@ -191,15 +201,15 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     }
 
     /// <summary>
-    /// Attempts to cast the value to a <see cref="Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit"/> and returns true if successful.
+    /// Attempts to cast the value to a <see cref="Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit"/> and returns true if successful.
     /// </summary>
     public bool TryAsUnit(
-        out Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit? value
+        out Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit? value
     )
     {
         if (Kind == "unit")
         {
-            value = (Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit)
+            value = (Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit)
                 Value!;
             return true;
         }
@@ -209,28 +219,28 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
 
     public override string ToString() => JsonUtils.Serialize(this);
 
-    public static implicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Item value
+    public static implicit operator PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Item value
     ) => new(value);
 
-    public static implicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Package value
+    public static implicit operator PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Package value
     ) => new(value);
 
-    public static implicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Unit value
+    public static implicit operator PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Unit value
     ) => new(value);
 
     [Serializable]
     internal sealed class JsonConverter
-        : JsonConverter<PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis>
+        : JsonConverter<PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis>
     {
         public override bool CanConvert(global::System.Type typeToConvert) =>
-            typeof(PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis).IsAssignableFrom(
+            typeof(PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis).IsAssignableFrom(
                 typeToConvert
             );
 
-        public override PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis Read(
+        public override PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis Read(
             ref Utf8JsonReader reader,
             global::System.Type typeToConvert,
             JsonSerializerOptions options
@@ -266,29 +276,29 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
             var value = discriminator switch
             {
                 "item" =>
-                    jsonWithoutDiscriminator.Deserialize<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem?>(
+                    jsonWithoutDiscriminator.Deserialize<Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem?>(
                         options
                     )
                         ?? throw new JsonException(
-                            "Failed to deserialize Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem"
+                            "Failed to deserialize Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem"
                         ),
                 "package" =>
-                    jsonWithoutDiscriminator.Deserialize<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage?>(
+                    jsonWithoutDiscriminator.Deserialize<Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage?>(
                         options
                     )
                         ?? throw new JsonException(
-                            "Failed to deserialize Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage"
+                            "Failed to deserialize Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage"
                         ),
                 "unit" =>
-                    jsonWithoutDiscriminator.Deserialize<Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit?>(
+                    jsonWithoutDiscriminator.Deserialize<Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit?>(
                         options
                     )
                         ?? throw new JsonException(
-                            "Failed to deserialize Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit"
+                            "Failed to deserialize Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit"
                         ),
                 _ => json.Deserialize<object?>(options),
             };
-            return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
+            return new PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
                 discriminator,
                 value
             );
@@ -296,7 +306,7 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
 
         public override void Write(
             Utf8JsonWriter writer,
-            PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis value,
+            PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis value,
             JsonSerializerOptions options
         )
         {
@@ -312,7 +322,7 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
             json.WriteTo(writer, options);
         }
 
-        public override PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis ReadAsPropertyName(
+        public override PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis ReadAsPropertyName(
             ref Utf8JsonReader reader,
             global::System.Type typeToConvert,
             JsonSerializerOptions options
@@ -321,7 +331,7 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
             var stringValue =
                 reader.GetString()
                 ?? throw new JsonException("The JSON property name could not be read as a string.");
-            return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis(
+            return new PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis(
                 stringValue,
                 stringValue
             );
@@ -329,7 +339,7 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
 
         public override void WriteAsPropertyName(
             Utf8JsonWriter writer,
-            PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis value,
+            PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis value,
             JsonSerializerOptions options
         )
         {
@@ -344,18 +354,18 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     public struct Item
     {
         public Item(
-            Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem value
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem value
         )
         {
             Value = value;
         }
 
-        internal Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem Value { get; set; }
+        internal Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem Value { get; set; }
 
         public override string ToString() => Value.ToString() ?? "null";
 
-        public static implicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Item(
-            Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItem value
+        public static implicit operator PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Item(
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisItem value
         ) => new(value);
     }
 
@@ -366,18 +376,18 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     public struct Package
     {
         public Package(
-            Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage value
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage value
         )
         {
             Value = value;
         }
 
-        internal Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage Value { get; set; }
+        internal Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage Value { get; set; }
 
         public override string ToString() => Value.ToString() ?? "null";
 
-        public static implicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Package(
-            Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisPackage value
+        public static implicit operator PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Package(
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisPackage value
         ) => new(value);
     }
 
@@ -388,18 +398,18 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis
     public struct Unit
     {
         public Unit(
-            Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit value
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit value
         )
         {
             Value = value;
         }
 
-        internal Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit Value { get; set; }
+        internal Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit Value { get; set; }
 
         public override string ToString() => Value.ToString() ?? "null";
 
-        public static implicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis.Unit(
-            Affinity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnit value
+        public static implicit operator PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis.Unit(
+            Affinity.PlatformPublicApiSellingPricesReadPresentationPriceResponseBasisUnit value
         ) => new(value);
     }
 }

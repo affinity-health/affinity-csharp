@@ -11,11 +11,11 @@ namespace Affinity.Orders;
 public readonly record struct CreateOrderBatchRequestOrdersItemPatientMeasurementsItemHeightCentimetersOne
     : IStringEnum
 {
-    public static readonly CreateOrderBatchRequestOrdersItemPatientMeasurementsItemHeightCentimetersOne Infinity =
-        new(Values.Infinity);
-
     public static readonly CreateOrderBatchRequestOrdersItemPatientMeasurementsItemHeightCentimetersOne NaN =
         new(Values.NaN);
+
+    public static readonly CreateOrderBatchRequestOrdersItemPatientMeasurementsItemHeightCentimetersOne Infinity =
+        new(Values.Infinity);
 
     public CreateOrderBatchRequestOrdersItemPatientMeasurementsItemHeightCentimetersOne(
         string value
@@ -132,8 +132,8 @@ public readonly record struct CreateOrderBatchRequestOrdersItemPatientMeasuremen
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

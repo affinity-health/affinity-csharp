@@ -11,12 +11,12 @@ namespace Affinity;
 public readonly record struct GetWebhookEventResponseDeliveriesItemAutomaticAttemptCountOne
     : IStringEnum
 {
-    public static readonly GetWebhookEventResponseDeliveriesItemAutomaticAttemptCountOne Infinity =
-        new(Values.Infinity);
-
     public static readonly GetWebhookEventResponseDeliveriesItemAutomaticAttemptCountOne NaN = new(
         Values.NaN
     );
+
+    public static readonly GetWebhookEventResponseDeliveriesItemAutomaticAttemptCountOne Infinity =
+        new(Values.Infinity);
 
     public GetWebhookEventResponseDeliveriesItemAutomaticAttemptCountOne(string value)
     {
@@ -125,8 +125,8 @@ public readonly record struct GetWebhookEventResponseDeliveriesItemAutomaticAtte
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

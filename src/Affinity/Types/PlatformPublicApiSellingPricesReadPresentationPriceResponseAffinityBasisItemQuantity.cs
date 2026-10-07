@@ -5,16 +5,18 @@ using global::System.Text.Json.Serialization;
 namespace Affinity;
 
 [JsonConverter(
-    typeof(PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantitySerializer)
+    typeof(PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity.PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantitySerializer)
 )]
 [Serializable]
-public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity
+public readonly record struct PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity
     : IStringEnum
 {
-    public static readonly PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity One =
+    public static readonly PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity One =
         new(Values.One);
 
-    public PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity(string value)
+    public PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity(
+        string value
+    )
     {
         Value = value;
     }
@@ -27,11 +29,13 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
     /// <summary>
     /// Create a string enum with the given value.
     /// </summary>
-    public static PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity FromCustom(
+    public static PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity FromCustom(
         string value
     )
     {
-        return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity(value);
+        return new PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity(
+            value
+        );
     }
 
     public bool Equals(string? other)
@@ -48,27 +52,27 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
     }
 
     public static bool operator ==(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity value1,
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity value1,
         string value2
     ) => value1.Value.Equals(value2);
 
     public static bool operator !=(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity value1,
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity value1,
         string value2
     ) => !value1.Value.Equals(value2);
 
     public static explicit operator string(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity value
+        PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity value
     ) => value.Value;
 
-    public static explicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity(
+    public static explicit operator PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity(
         string value
     ) => new(value);
 
-    internal class PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantitySerializer
-        : JsonConverter<PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity>
+    internal class PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantitySerializer
+        : JsonConverter<PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity>
     {
-        public override PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity Read(
+        public override PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity Read(
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options
@@ -79,21 +83,21 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
                 ?? throw new global::System.Exception(
                     "The JSON value could not be read as a string."
                 );
-            return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity(
+            return new PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity(
                 stringValue
             );
         }
 
         public override void Write(
             Utf8JsonWriter writer,
-            PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity value,
+            PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity value,
             JsonSerializerOptions options
         )
         {
             writer.WriteStringValue(value.Value);
         }
 
-        public override PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity ReadAsPropertyName(
+        public override PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity ReadAsPropertyName(
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options
@@ -104,14 +108,14 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
                 ?? throw new global::System.Exception(
                     "The JSON property name could not be read as a string."
                 );
-            return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity(
+            return new PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity(
                 stringValue
             );
         }
 
         public override void WriteAsPropertyName(
             Utf8JsonWriter writer,
-            PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisItemQuantity value,
+            PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisItemQuantity value,
             JsonSerializerOptions options
         )
         {

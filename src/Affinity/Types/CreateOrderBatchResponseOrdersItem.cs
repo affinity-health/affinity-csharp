@@ -1,6 +1,7 @@
 using Affinity.Core;
 using global::System.Text.Json;
 using global::System.Text.Json.Serialization;
+using OneOf;
 
 namespace Affinity;
 
@@ -25,7 +26,8 @@ public record CreateOrderBatchResponseOrdersItem : IJsonOnDeserialized
     public string? ExternalOrderId { get; set; }
 
     [JsonPropertyName("metadata")]
-    public required CreateOrderBatchResponseOrdersItemMetadata Metadata { get; set; }
+    public Dictionary<string, OneOf<string, double, bool>?> Metadata { get; set; } =
+        new Dictionary<string, OneOf<string, double, bool>?>();
 
     [JsonPropertyName("createdAt")]
     public required string CreatedAt { get; set; }

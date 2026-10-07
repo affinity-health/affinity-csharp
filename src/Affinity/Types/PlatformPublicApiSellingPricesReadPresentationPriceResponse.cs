@@ -5,7 +5,7 @@ using global::System.Text.Json.Serialization;
 namespace Affinity;
 
 [Serializable]
-public record PlatformPublicApiSellingPricesUpdateSellingPriceResponse : IJsonOnDeserialized
+public record PlatformPublicApiSellingPricesReadPresentationPriceResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]
     private readonly IDictionary<string, JsonElement> _extensionData =
@@ -18,16 +18,16 @@ public record PlatformPublicApiSellingPricesUpdateSellingPriceResponse : IJsonOn
     public required int Version { get; set; }
 
     [JsonPropertyName("currency")]
-    public required PlatformPublicApiSellingPricesUpdateSellingPriceResponseCurrency Currency { get; set; }
+    public required PlatformPublicApiSellingPricesReadPresentationPriceResponseCurrency Currency { get; set; }
+
+    [JsonPropertyName("affinityPriceCents")]
+    public int? AffinityPriceCents { get; set; }
+
+    [JsonPropertyName("affinityBasis")]
+    public PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasis? AffinityBasis { get; set; }
 
     [JsonPropertyName("basis")]
-    public required PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasis Basis { get; set; }
-
-    [JsonPropertyName("purchaseAmountCents")]
-    public required int PurchaseAmountCents { get; set; }
-
-    [JsonPropertyName("requiresReview")]
-    public required bool RequiresReview { get; set; }
+    public PlatformPublicApiSellingPricesReadPresentationPriceResponseBasis? Basis { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

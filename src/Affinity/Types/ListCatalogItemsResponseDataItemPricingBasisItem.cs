@@ -17,6 +17,9 @@ public record ListCatalogItemsResponseDataItemPricingBasisItem : IJsonOnDeserial
     [JsonPropertyName("unit")]
     public required string Unit { get; set; }
 
+    [JsonPropertyName("quantityPrices")]
+    public IEnumerable<ListCatalogItemsResponseDataItemPricingBasisItemQuantityPricesItem>? QuantityPrices { get; set; }
+
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

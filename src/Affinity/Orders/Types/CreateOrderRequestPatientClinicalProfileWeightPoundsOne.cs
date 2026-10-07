@@ -10,12 +10,12 @@ namespace Affinity;
 [Serializable]
 public readonly record struct CreateOrderRequestPatientClinicalProfileWeightPoundsOne : IStringEnum
 {
-    public static readonly CreateOrderRequestPatientClinicalProfileWeightPoundsOne Infinity = new(
-        Values.Infinity
-    );
-
     public static readonly CreateOrderRequestPatientClinicalProfileWeightPoundsOne NaN = new(
         Values.NaN
+    );
+
+    public static readonly CreateOrderRequestPatientClinicalProfileWeightPoundsOne Infinity = new(
+        Values.Infinity
     );
 
     public CreateOrderRequestPatientClinicalProfileWeightPoundsOne(string value)
@@ -123,8 +123,8 @@ public readonly record struct CreateOrderRequestPatientClinicalProfileWeightPoun
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

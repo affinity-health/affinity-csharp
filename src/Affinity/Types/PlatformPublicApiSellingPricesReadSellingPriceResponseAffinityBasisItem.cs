@@ -5,11 +5,21 @@ using global::System.Text.Json.Serialization;
 namespace Affinity;
 
 [Serializable]
-public record ListOrdersResponseDataItemMetadata : IJsonOnDeserialized
+public record PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisItem
+    : IJsonOnDeserialized
 {
     [JsonExtensionData]
     private readonly IDictionary<string, JsonElement> _extensionData =
         new Dictionary<string, JsonElement>();
+
+    [JsonPropertyName("quantity")]
+    public required PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisItemQuantity Quantity { get; set; }
+
+    [JsonPropertyName("unit")]
+    public required string Unit { get; set; }
+
+    [JsonPropertyName("quantityPrices")]
+    public IEnumerable<PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisItemQuantityPricesItem>? QuantityPrices { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

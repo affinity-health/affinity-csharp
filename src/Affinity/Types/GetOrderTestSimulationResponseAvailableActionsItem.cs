@@ -10,14 +10,6 @@ namespace Affinity;
 [Serializable]
 public readonly record struct GetOrderTestSimulationResponseAvailableActionsItem : IStringEnum
 {
-    public static readonly GetOrderTestSimulationResponseAvailableActionsItem Accept = new(
-        Values.Accept
-    );
-
-    public static readonly GetOrderTestSimulationResponseAvailableActionsItem Process = new(
-        Values.Process
-    );
-
     public static readonly GetOrderTestSimulationResponseAvailableActionsItem Ship = new(
         Values.Ship
     );
@@ -25,16 +17,6 @@ public readonly record struct GetOrderTestSimulationResponseAvailableActionsItem
     public static readonly GetOrderTestSimulationResponseAvailableActionsItem Deliver = new(
         Values.Deliver
     );
-
-    public static readonly GetOrderTestSimulationResponseAvailableActionsItem Reject = new(
-        Values.Reject
-    );
-
-    public static readonly GetOrderTestSimulationResponseAvailableActionsItem ConfirmCancellation =
-        new(Values.ConfirmCancellation);
-
-    public static readonly GetOrderTestSimulationResponseAvailableActionsItem DeclineCancellation =
-        new(Values.DeclineCancellation);
 
     public GetOrderTestSimulationResponseAvailableActionsItem(string value)
     {
@@ -141,18 +123,8 @@ public readonly record struct GetOrderTestSimulationResponseAvailableActionsItem
     [Serializable]
     public static class Values
     {
-        public const string Accept = "accept";
-
-        public const string Process = "process";
-
         public const string Ship = "ship";
 
         public const string Deliver = "deliver";
-
-        public const string Reject = "reject";
-
-        public const string ConfirmCancellation = "confirm_cancellation";
-
-        public const string DeclineCancellation = "decline_cancellation";
     }
 }

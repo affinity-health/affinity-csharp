@@ -11,12 +11,12 @@ namespace Affinity;
 public readonly record struct ListCatalogItemsResponseDataItemMedicationGroupOfferCountOne
     : IStringEnum
 {
-    public static readonly ListCatalogItemsResponseDataItemMedicationGroupOfferCountOne Infinity =
-        new(Values.Infinity);
-
     public static readonly ListCatalogItemsResponseDataItemMedicationGroupOfferCountOne NaN = new(
         Values.NaN
     );
+
+    public static readonly ListCatalogItemsResponseDataItemMedicationGroupOfferCountOne Infinity =
+        new(Values.Infinity);
 
     public ListCatalogItemsResponseDataItemMedicationGroupOfferCountOne(string value)
     {
@@ -125,8 +125,8 @@ public readonly record struct ListCatalogItemsResponseDataItemMedicationGroupOff
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

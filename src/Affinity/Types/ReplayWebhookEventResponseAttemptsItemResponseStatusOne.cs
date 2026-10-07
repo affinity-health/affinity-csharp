@@ -10,12 +10,12 @@ namespace Affinity;
 [Serializable]
 public readonly record struct ReplayWebhookEventResponseAttemptsItemResponseStatusOne : IStringEnum
 {
-    public static readonly ReplayWebhookEventResponseAttemptsItemResponseStatusOne Infinity = new(
-        Values.Infinity
-    );
-
     public static readonly ReplayWebhookEventResponseAttemptsItemResponseStatusOne NaN = new(
         Values.NaN
+    );
+
+    public static readonly ReplayWebhookEventResponseAttemptsItemResponseStatusOne Infinity = new(
+        Values.Infinity
     );
 
     public ReplayWebhookEventResponseAttemptsItemResponseStatusOne(string value)
@@ -123,8 +123,8 @@ public readonly record struct ReplayWebhookEventResponseAttemptsItemResponseStat
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }

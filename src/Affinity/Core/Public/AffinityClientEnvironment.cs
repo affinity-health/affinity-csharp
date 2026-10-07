@@ -3,5 +3,5 @@ namespace Affinity;
 [Serializable]
 public class AffinityClientEnvironment
 {
-    public const string Production = "https://api.joinaffinityai.com";
+    public const string Production = "https://api.affinityrx.com";
 }

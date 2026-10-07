@@ -20,6 +20,12 @@ public record PlatformPublicApiSellingPricesReadSellingPriceResponse : IJsonOnDe
     [JsonPropertyName("currency")]
     public required PlatformPublicApiSellingPricesReadSellingPriceResponseCurrency Currency { get; set; }
 
+    [JsonPropertyName("affinityPriceCents")]
+    public int? AffinityPriceCents { get; set; }
+
+    [JsonPropertyName("affinityBasis")]
+    public PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasis? AffinityBasis { get; set; }
+
     [JsonPropertyName("basis")]
     public required PlatformPublicApiSellingPricesReadSellingPriceResponseBasis Basis { get; set; }
 

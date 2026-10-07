@@ -10,13 +10,13 @@ namespace Affinity.Orders;
 [Serializable]
 public readonly record struct UpdateOrderTestSimulationRequestAction : IStringEnum
 {
-    public static readonly UpdateOrderTestSimulationRequestAction Accept = new(Values.Accept);
-
-    public static readonly UpdateOrderTestSimulationRequestAction Process = new(Values.Process);
-
     public static readonly UpdateOrderTestSimulationRequestAction Ship = new(Values.Ship);
 
     public static readonly UpdateOrderTestSimulationRequestAction Deliver = new(Values.Deliver);
+
+    public static readonly UpdateOrderTestSimulationRequestAction Accept = new(Values.Accept);
+
+    public static readonly UpdateOrderTestSimulationRequestAction Process = new(Values.Process);
 
     public static readonly UpdateOrderTestSimulationRequestAction Reject = new(Values.Reject);
 
@@ -127,13 +127,13 @@ public readonly record struct UpdateOrderTestSimulationRequestAction : IStringEn
     [Serializable]
     public static class Values
     {
-        public const string Accept = "accept";
-
-        public const string Process = "process";
-
         public const string Ship = "ship";
 
         public const string Deliver = "deliver";
+
+        public const string Accept = "accept";
+
+        public const string Process = "process";
 
         public const string Reject = "reject";
 

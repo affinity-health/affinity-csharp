@@ -5,16 +5,18 @@ using global::System.Text.Json.Serialization;
 namespace Affinity;
 
 [JsonConverter(
-    typeof(PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity.PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantitySerializer)
+    typeof(PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity.PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantitySerializer)
 )]
 [Serializable]
-public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity
+public readonly record struct PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity
     : IStringEnum
 {
-    public static readonly PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity One =
+    public static readonly PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity One =
         new(Values.One);
 
-    public PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity(string value)
+    public PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity(
+        string value
+    )
     {
         Value = value;
     }
@@ -27,11 +29,13 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
     /// <summary>
     /// Create a string enum with the given value.
     /// </summary>
-    public static PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity FromCustom(
+    public static PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity FromCustom(
         string value
     )
     {
-        return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity(value);
+        return new PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity(
+            value
+        );
     }
 
     public bool Equals(string? other)
@@ -48,27 +52,27 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
     }
 
     public static bool operator ==(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity value1,
+        PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity value1,
         string value2
     ) => value1.Value.Equals(value2);
 
     public static bool operator !=(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity value1,
+        PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity value1,
         string value2
     ) => !value1.Value.Equals(value2);
 
     public static explicit operator string(
-        PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity value
+        PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity value
     ) => value.Value;
 
-    public static explicit operator PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity(
+    public static explicit operator PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity(
         string value
     ) => new(value);
 
-    internal class PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantitySerializer
-        : JsonConverter<PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity>
+    internal class PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantitySerializer
+        : JsonConverter<PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity>
     {
-        public override PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity Read(
+        public override PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity Read(
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options
@@ -79,21 +83,21 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
                 ?? throw new global::System.Exception(
                     "The JSON value could not be read as a string."
                 );
-            return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity(
+            return new PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity(
                 stringValue
             );
         }
 
         public override void Write(
             Utf8JsonWriter writer,
-            PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity value,
+            PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity value,
             JsonSerializerOptions options
         )
         {
             writer.WriteStringValue(value.Value);
         }
 
-        public override PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity ReadAsPropertyName(
+        public override PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity ReadAsPropertyName(
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options
@@ -104,14 +108,14 @@ public readonly record struct PlatformPublicApiSellingPricesUpdateSellingPriceRe
                 ?? throw new global::System.Exception(
                     "The JSON property name could not be read as a string."
                 );
-            return new PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity(
+            return new PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity(
                 stringValue
             );
         }
 
         public override void WriteAsPropertyName(
             Utf8JsonWriter writer,
-            PlatformPublicApiSellingPricesUpdateSellingPriceResponseBasisUnitQuantity value,
+            PlatformPublicApiSellingPricesReadSellingPriceResponseAffinityBasisUnitQuantity value,
             JsonSerializerOptions options
         )
         {

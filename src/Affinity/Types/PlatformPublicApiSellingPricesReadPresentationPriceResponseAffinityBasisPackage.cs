@@ -5,11 +5,18 @@ using global::System.Text.Json.Serialization;
 namespace Affinity;
 
 [Serializable]
-public record GetOrderResponseMetadata : IJsonOnDeserialized
+public record PlatformPublicApiSellingPricesReadPresentationPriceResponseAffinityBasisPackage
+    : IJsonOnDeserialized
 {
     [JsonExtensionData]
     private readonly IDictionary<string, JsonElement> _extensionData =
         new Dictionary<string, JsonElement>();
+
+    [JsonPropertyName("quantity")]
+    public required string Quantity { get; set; }
+
+    [JsonPropertyName("unit")]
+    public required string Unit { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

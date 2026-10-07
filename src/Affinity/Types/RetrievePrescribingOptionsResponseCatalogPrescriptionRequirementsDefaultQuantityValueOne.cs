@@ -11,11 +11,11 @@ namespace Affinity;
 public readonly record struct RetrievePrescribingOptionsResponseCatalogPrescriptionRequirementsDefaultQuantityValueOne
     : IStringEnum
 {
-    public static readonly RetrievePrescribingOptionsResponseCatalogPrescriptionRequirementsDefaultQuantityValueOne Infinity =
-        new(Values.Infinity);
-
     public static readonly RetrievePrescribingOptionsResponseCatalogPrescriptionRequirementsDefaultQuantityValueOne NaN =
         new(Values.NaN);
+
+    public static readonly RetrievePrescribingOptionsResponseCatalogPrescriptionRequirementsDefaultQuantityValueOne Infinity =
+        new(Values.Infinity);
 
     public RetrievePrescribingOptionsResponseCatalogPrescriptionRequirementsDefaultQuantityValueOne(
         string value
@@ -132,8 +132,8 @@ public readonly record struct RetrievePrescribingOptionsResponseCatalogPrescript
     [Serializable]
     public static class Values
     {
-        public const string Infinity = "Infinity";
-
         public const string NaN = "NaN";
+
+        public const string Infinity = "Infinity";
     }
 }
