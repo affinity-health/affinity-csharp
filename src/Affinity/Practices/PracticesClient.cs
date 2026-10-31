@@ -33,8 +33,7 @@ public partial class PracticesClient : IPracticesClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 6)
-            .Add("endingBefore", request.EndingBefore)
+        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 5)
             .Add("limit", request.Limit)
             .Add("startingAfter", request.StartingAfter)
             .Add("externalId", request.ExternalId)

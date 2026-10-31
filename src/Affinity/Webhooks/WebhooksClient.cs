@@ -33,8 +33,7 @@ public partial class WebhooksClient : IWebhooksClient
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 3)
-            .Add("endingBefore", request.EndingBefore)
+        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 2)
             .Add("limit", request.Limit)
             .Add("startingAfter", request.StartingAfter)
             .MergeAdditional(options?.AdditionalQueryParameters)

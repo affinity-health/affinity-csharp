@@ -10,7 +10,11 @@ public readonly record struct ListOrdersRequestSort : IStringEnum
 {
     public static readonly ListOrdersRequestSort Patient = new(Values.Patient);
 
+    public static readonly ListOrdersRequestSort PatientDescending = new(Values.PatientDescending);
+
     public static readonly ListOrdersRequestSort Created = new(Values.Created);
+
+    public static readonly ListOrdersRequestSort CreatedDescending = new(Values.CreatedDescending);
 
     public ListOrdersRequestSort(string value)
     {
@@ -110,6 +114,10 @@ public readonly record struct ListOrdersRequestSort : IStringEnum
     {
         public const string Patient = "patient";
 
+        public const string PatientDescending = "-patient";
+
         public const string Created = "created";
+
+        public const string CreatedDescending = "-created";
     }
 }

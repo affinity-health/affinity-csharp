@@ -4,7 +4,7 @@
   "fernVersion": "5.190.0",
   "generator": "fernapi/fern-csharp-sdk",
   "generatorVersion": "2.92.12",
-  "packageVersion": "0.4.0",
+  "packageVersion": "0.4.1",
   "operations": {
     "account.get": "GET /v1/account",
     "feedback.create": "POST /v1/feedback",

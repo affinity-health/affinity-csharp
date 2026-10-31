@@ -10,11 +10,23 @@ public readonly record struct ListPracticesRequestSort : IStringEnum
 {
     public static readonly ListPracticesRequestSort Name = new(Values.Name);
 
+    public static readonly ListPracticesRequestSort NameDescending = new(Values.NameDescending);
+
     public static readonly ListPracticesRequestSort Location = new(Values.Location);
+
+    public static readonly ListPracticesRequestSort LocationDescending = new(
+        Values.LocationDescending
+    );
 
     public static readonly ListPracticesRequestSort Mode = new(Values.Mode);
 
+    public static readonly ListPracticesRequestSort ModeDescending = new(Values.ModeDescending);
+
     public static readonly ListPracticesRequestSort Created = new(Values.Created);
+
+    public static readonly ListPracticesRequestSort CreatedDescending = new(
+        Values.CreatedDescending
+    );
 
     public ListPracticesRequestSort(string value)
     {
@@ -114,10 +126,18 @@ public readonly record struct ListPracticesRequestSort : IStringEnum
     {
         public const string Name = "name";
 
+        public const string NameDescending = "-name";
+
         public const string Location = "location";
+
+        public const string LocationDescending = "-location";
 
         public const string Mode = "mode";
 
+        public const string ModeDescending = "-mode";
+
         public const string Created = "created";
+
+        public const string CreatedDescending = "-created";
     }
 }

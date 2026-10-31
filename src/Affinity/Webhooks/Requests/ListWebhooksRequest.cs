@@ -7,12 +7,6 @@ namespace Affinity;
 public record ListWebhooksRequest
 {
     /// <summary>
-    /// Page backward before this opaque cursor. Keep the same filters, sort, organization and mode. Send either startingAfter or endingBefore.
-    /// </summary>
-    [JsonIgnore]
-    public string? EndingBefore { get; set; }
-
-    /// <summary>
     /// Maximum records per page, from 1 to 100. Defaults to 25.
     /// </summary>
     [JsonIgnore]
