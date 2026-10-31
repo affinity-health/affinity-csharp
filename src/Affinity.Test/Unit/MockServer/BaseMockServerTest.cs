@@ -24,8 +24,7 @@ public class BaseMockServerTest
 
         // Initialize the Client
         Client = new AffinityClient(
-            "API_KEY",
-            "AFFINITY_VERSION",
+            "TOKEN",
             clientOptions: new ClientOptions { BaseUrl = Server.Urls[0], MaxRetries = 0 }
         );
     }

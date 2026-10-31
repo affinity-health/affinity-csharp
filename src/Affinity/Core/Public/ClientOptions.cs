@@ -19,7 +19,7 @@ public partial class ClientOptions
 #else
         set;
 #endif
-    } = AffinityClientEnvironment.Production;
+    } = AffinityClientEnvironment.Default;
 
     /// <summary>
     /// The http client used to make requests.
@@ -30,7 +30,7 @@ public partial class ClientOptions
 #else
         set;
 #endif
-    } = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
+    } = DefaultHttpClientFactory.Create();
 
     /// <summary>
     /// Additional headers to be sent with HTTP requests.
@@ -53,7 +53,7 @@ public partial class ClientOptions
 #else
         set;
 #endif
-    } = 0;
+    } = 2;
 
     /// <summary>
     /// The timeout for the request.
@@ -64,7 +64,18 @@ public partial class ClientOptions
 #else
         set;
 #endif
-    } = TimeSpan.FromSeconds(60);
+    } = TimeSpan.FromMilliseconds(30000);
+
+    /// <summary>
+    /// The dated API version this request is written against.
+    /// </summary>
+    public string? AffinityVersion { get;
+#if NET5_0_OR_GREATER
+        init;
+#else
+        set;
+#endif
+    } = null;
 
     /// <summary>
     /// Clones this and returns a new instance
@@ -79,6 +90,7 @@ public partial class ClientOptions
             Timeout = Timeout,
             Headers = new Headers(new Dictionary<string, HeaderValue>(Headers)),
             AdditionalHeaders = AdditionalHeaders,
+            AffinityVersion = AffinityVersion,
         };
     }
 }

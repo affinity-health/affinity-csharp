@@ -8,9 +8,9 @@ namespace Affinity;
 [Serializable]
 public readonly record struct ListOrdersRequestSort : IStringEnum
 {
-    public static readonly ListOrdersRequestSort Newest = new(Values.Newest);
+    public static readonly ListOrdersRequestSort Patient = new(Values.Patient);
 
-    public static readonly ListOrdersRequestSort Oldest = new(Values.Oldest);
+    public static readonly ListOrdersRequestSort Created = new(Values.Created);
 
     public ListOrdersRequestSort(string value)
     {
@@ -108,8 +108,8 @@ public readonly record struct ListOrdersRequestSort : IStringEnum
     [Serializable]
     public static class Values
     {
-        public const string Newest = "newest";
+        public const string Patient = "patient";
 
-        public const string Oldest = "oldest";
+        public const string Created = "created";
     }
 }

@@ -1,1 +1,7 @@
-<Project><PropertyGroup><PackageId>Affinity.Health.Sdk</PackageId><Version>0.3.0</Version><Authors>Affinity Health</Authors><Description>C# client for the Affinity API</Description><PackageLicenseExpression>MIT</PackageLicenseExpression><RepositoryUrl>https://github.com/affinity-health/affinity-csharp</RepositoryUrl></PropertyGroup></Project>
+<!-- Written by hand; scripts/generate.sh keeps it. Imported last by the generated Affinity.csproj. -->
+<Project>
+  <PropertyGroup>
+    <!-- Fern also targets net9.0, which the .NET 8 SDK cannot build. The net8.0 build runs on .NET 9 and later. -->
+    <TargetFrameworks>net462;net8.0;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+</Project>

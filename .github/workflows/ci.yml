@@ -1,14 +1,30 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  check:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - run: ./scripts/check.sh
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: dotnet build src/Affinity/Affinity.csproj -c Release
+      - run: dotnet test src/Affinity.Test/Affinity.Test.csproj
+      # Offline webhook signature checks; the full smoke test needs a key and does not run here.
+      - run: dotnet run --project tests/Affinity.Smoke -- webhook
+      - run: dotnet pack src/Affinity/Affinity.csproj -c Release -o artifacts
+      # Regenerates the SDK with Fern in Docker and fails on any difference.
+      - run: scripts/generate-check.sh

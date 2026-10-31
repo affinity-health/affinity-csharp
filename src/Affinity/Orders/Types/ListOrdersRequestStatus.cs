@@ -8,31 +8,17 @@ namespace Affinity;
 [Serializable]
 public readonly record struct ListOrdersRequestStatus : IStringEnum
 {
-    public static readonly ListOrdersRequestStatus Blocked = new(Values.Blocked);
-
-    public static readonly ListOrdersRequestStatus Cancelled = new(Values.Cancelled);
-
-    public static readonly ListOrdersRequestStatus Delivered = new(Values.Delivered);
-
-    public static readonly ListOrdersRequestStatus Draft = new(Values.Draft);
-
-    public static readonly ListOrdersRequestStatus PartiallySubmitted = new(
-        Values.PartiallySubmitted
-    );
-
-    public static readonly ListOrdersRequestStatus RequiresProviderSignature = new(
-        Values.RequiresProviderSignature
-    );
+    public static readonly ListOrdersRequestStatus Submitted = new(Values.Submitted);
 
     public static readonly ListOrdersRequestStatus Processing = new(Values.Processing);
 
-    public static readonly ListOrdersRequestStatus Ready = new(Values.Ready);
-
-    public static readonly ListOrdersRequestStatus Rejected = new(Values.Rejected);
-
     public static readonly ListOrdersRequestStatus Shipped = new(Values.Shipped);
 
-    public static readonly ListOrdersRequestStatus Submitted = new(Values.Submitted);
+    public static readonly ListOrdersRequestStatus Delivered = new(Values.Delivered);
+
+    public static readonly ListOrdersRequestStatus Cancelled = new(Values.Cancelled);
+
+    public static readonly ListOrdersRequestStatus Failed = new(Values.Failed);
 
     public ListOrdersRequestStatus(string value)
     {
@@ -130,26 +116,16 @@ public readonly record struct ListOrdersRequestStatus : IStringEnum
     [Serializable]
     public static class Values
     {
-        public const string Blocked = "blocked";
-
-        public const string Cancelled = "cancelled";
-
-        public const string Delivered = "delivered";
-
-        public const string Draft = "draft";
-
-        public const string PartiallySubmitted = "partially_submitted";
-
-        public const string RequiresProviderSignature = "requires_provider_signature";
+        public const string Submitted = "submitted";
 
         public const string Processing = "processing";
 
-        public const string Ready = "ready";
-
-        public const string Rejected = "rejected";
-
         public const string Shipped = "shipped";
 
-        public const string Submitted = "submitted";
+        public const string Delivered = "delivered";
+
+        public const string Cancelled = "cancelled";
+
+        public const string Failed = "failed";
     }
 }

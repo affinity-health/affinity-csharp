@@ -1,5 +1,6 @@
 using Affinity.Core;
 using global::System.Text.Json;
+using OneOf;
 
 namespace Affinity;
 
@@ -12,14 +13,12 @@ public partial class AccountClient : IAccountClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<GetAccountResponse>> GetAsyncCore(
-        GetAccountRequest request,
+    private async Task<WithRawResponse<Account>> GetAsyncCore(
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 1)
-            .Add("orgId", request.OrgId)
+        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 0)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new Affinity.Core.HeadersBuilder.Builder()
@@ -48,8 +47,8 @@ public partial class AccountClient : IAccountClient
                 .ConfigureAwait(false);
             try
             {
-                var responseData = JsonUtils.Deserialize<GetAccountResponse>(responseBody)!;
-                return new WithRawResponse<GetAccountResponse>()
+                var responseData = JsonUtils.Deserialize<Account>(responseBody)!;
+                return new WithRawResponse<Account>()
                 {
                     Data = responseData,
                     RawResponse = new Affinity.RawResponse()
@@ -132,8 +131,8 @@ public partial class AccountClient : IAccountClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 409:
-                        throw new ConflictError(
+                    case 405:
+                        throw new MethodNotAllowedError(
                             JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
@@ -144,9 +143,9 @@ public partial class AccountClient : IAccountClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
+                    case 413:
+                        throw new ContentTooLargeError(
+                            JsonUtils.Deserialize<object>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -158,7 +157,33 @@ public partial class AccountClient : IAccountClient
                         );
                     case 429:
                         throw new TooManyRequestsError(
+                            JsonUtils.Deserialize<Problem429>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 500:
+                        throw new InternalServerError(
                             JsonUtils.Deserialize<Problem>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 503:
+                        throw new ServiceUnavailableError(
+                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
+                                responseBody
+                            ),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -189,19 +214,16 @@ public partial class AccountClient : IAccountClient
     }
 
     /// <summary>
-    /// Returns the platform organization, request livemode, and effective access. API keys report scopes and the service_key role; dashboard sessions report membership permissions. operatingMode describes organization Live access, not the credential's Test/Live mode.
+    /// Read the organization and Test or Live mode selected by the API key.
     /// </summary>
     /// <example><code>
-    /// await client.Account.GetAsync(new GetAccountRequest { OrgId = "acct_01j2y8m6jcc9tt24af5pw9x1bc" });
+    /// await client.Account.GetAsync();
     /// </code></example>
-    public WithRawResponseTask<GetAccountResponse> GetAsync(
-        GetAccountRequest request,
+    public WithRawResponseTask<Account> GetAsync(
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<GetAccountResponse>(
-            GetAsyncCore(request, options, cancellationToken)
-        );
+        return new WithRawResponseTask<Account>(GetAsyncCore(options, cancellationToken));
     }
 }

@@ -74,9 +74,20 @@ public partial class RequestOptions : IRequestOptions
 
     /// <summary>
     /// Additional body properties sent with the request.
-    /// This is only applied to JSON requests.
+    /// This is applied to JSON and form-urlencoded requests (not multipart requests).
     /// </summary>
     public object? AdditionalBodyProperties { get;
+#if NET5_0_OR_GREATER
+        init;
+#else
+        set;
+#endif
+    }
+
+    /// <summary>
+    /// The dated API version this request is written against.
+    /// </summary>
+    public string? AffinityVersion { get;
 #if NET5_0_OR_GREATER
         init;
 #else

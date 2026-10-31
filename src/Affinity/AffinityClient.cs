@@ -1,18 +1,12 @@
-using Affinity.Catalog;
 using Affinity.Core;
-using Affinity.Webhooks;
 
 namespace Affinity;
 
-public partial class GeneratedAffinityClient : IAffinityClient
+public partial class AffinityClient : IAffinityClient
 {
     private readonly RawClient _client;
 
-    public GeneratedAffinityClient(
-        string? apiKey = null,
-        string? affinityVersion = "2026-09-28",
-        ClientOptions? clientOptions = null
-    )
+    public AffinityClient(string? token = null, ClientOptions? clientOptions = null)
     {
         clientOptions ??= new ClientOptions();
         var platformHeaders = new Headers(
@@ -20,9 +14,13 @@ public partial class GeneratedAffinityClient : IAffinityClient
             {
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Affinity" },
-                { "X-Fern-SDK-Version", Version.Current },
+                { "X-Fern-SDK-Version", global::Affinity.Version.Current },
             }
         );
+        if (clientOptions.AffinityVersion != null)
+        {
+            platformHeaders["Affinity-Version"] = clientOptions.AffinityVersion;
+        }
         foreach (var header in platformHeaders)
         {
             if (!clientOptions.Headers.ContainsKey(header.Key))
@@ -34,8 +32,8 @@ public partial class GeneratedAffinityClient : IAffinityClient
         var authHeaders = new Headers(
             new Dictionary<string, string>()
             {
-                { "x-affinity-api-key", apiKey ?? "" },
-                { "Affinity-Version", affinityVersion ?? "" },
+                { "Authorization", $"Bearer {token ?? ""}" },
+                { "Affinity-Version", "2026-10-28" },
             }
         );
         foreach (var header in authHeaders)
@@ -43,35 +41,23 @@ public partial class GeneratedAffinityClient : IAffinityClient
             clientOptionsWithAuth.Headers[header.Key] = header.Value;
         }
         _client = new RawClient(clientOptionsWithAuth);
-        Locations = new LocationsClient(_client);
-        ApiKeys = new ApiKeysClient(_client);
         Account = new AccountClient(_client);
-        Pharmacies = new PharmaciesClient(_client);
+        Feedback = new FeedbackClient(_client);
+        Medications = new MedicationsClient(_client);
         Orders = new OrdersClient(_client);
-        Team = new TeamClient(_client);
         Practices = new PracticesClient(_client);
-        Patients = new PatientsClient(_client);
-        Catalog = new CatalogClient(_client);
         Webhooks = new WebhooksClient(_client);
     }
 
-    public ILocationsClient Locations { get; }
-
-    public IApiKeysClient ApiKeys { get; }
-
     public IAccountClient Account { get; }
 
-    public IPharmaciesClient Pharmacies { get; }
+    public IFeedbackClient Feedback { get; }
+
+    public IMedicationsClient Medications { get; }
 
     public IOrdersClient Orders { get; }
 
-    public ITeamClient Team { get; }
-
     public IPracticesClient Practices { get; }
-
-    public IPatientsClient Patients { get; }
-
-    public ICatalogClient Catalog { get; }
 
     public IWebhooksClient Webhooks { get; }
 }

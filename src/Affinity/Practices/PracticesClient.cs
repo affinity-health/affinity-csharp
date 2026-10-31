@@ -1,5 +1,6 @@
 using Affinity.Core;
 using global::System.Text.Json;
+using OneOf;
 
 namespace Affinity;
 
@@ -12,17 +13,33 @@ public partial class PracticesClient : IPracticesClient
         _client = client;
     }
 
-    private async Task<WithRawResponse<ListPracticesResponse>> ListAsyncCore(
+    /// <summary>
+    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a leading `-` reverses.
+    /// </summary>
+    private WithRawResponseTask<PracticeList> ListInternalAsync(
         ListPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 4)
-            .Add("search", request.Search)
+        return new WithRawResponseTask<PracticeList>(
+            ListInternalAsyncCore(request, options, cancellationToken)
+        );
+    }
+
+    private async Task<WithRawResponse<PracticeList>> ListInternalAsyncCore(
+        ListPracticesRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var _queryString = new Affinity.Core.QueryStringBuilder.Builder(capacity: 6)
             .Add("endingBefore", request.EndingBefore)
             .Add("limit", request.Limit)
             .Add("startingAfter", request.StartingAfter)
+            .Add("externalId", request.ExternalId)
+            .Add("query", request.Query)
+            .Add("sort", request.Sort)
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new Affinity.Core.HeadersBuilder.Builder()
@@ -51,8 +68,8 @@ public partial class PracticesClient : IPracticesClient
                 .ConfigureAwait(false);
             try
             {
-                var responseData = JsonUtils.Deserialize<ListPracticesResponse>(responseBody)!;
-                return new WithRawResponse<ListPracticesResponse>()
+                var responseData = JsonUtils.Deserialize<PracticeList>(responseBody)!;
+                return new WithRawResponse<PracticeList>()
                 {
                     Data = responseData,
                     RawResponse = new Affinity.RawResponse()
@@ -135,8 +152,8 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 409:
-                        throw new ConflictError(
+                    case 405:
+                        throw new MethodNotAllowedError(
                             JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
@@ -147,9 +164,9 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
+                    case 413:
+                        throw new ContentTooLargeError(
+                            JsonUtils.Deserialize<object>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -161,7 +178,33 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 429:
                         throw new TooManyRequestsError(
+                            JsonUtils.Deserialize<Problem429>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 500:
+                        throw new InternalServerError(
                             JsonUtils.Deserialize<Problem>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 503:
+                        throw new ServiceUnavailableError(
+                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
+                                responseBody
+                            ),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -191,8 +234,8 @@ public partial class PracticesClient : IPracticesClient
         }
     }
 
-    private async Task<WithRawResponse<CreatePracticeResponse>> CreateAsyncCore(
-        CreatePracticeRequest request,
+    private async Task<WithRawResponse<Practice>> CreateAsyncCore(
+        CreatePracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -229,8 +272,8 @@ public partial class PracticesClient : IPracticesClient
                 .ConfigureAwait(false);
             try
             {
-                var responseData = JsonUtils.Deserialize<CreatePracticeResponse>(responseBody)!;
-                return new WithRawResponse<CreatePracticeResponse>()
+                var responseData = JsonUtils.Deserialize<Practice>(responseBody)!;
+                return new WithRawResponse<Practice>()
                 {
                     Data = responseData,
                     RawResponse = new Affinity.RawResponse()
@@ -313,9 +356,45 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
+                    case 405:
+                        throw new MethodNotAllowedError(
+                            JsonUtils.Deserialize<Problem>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
                     case 409:
                         throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
+                            JsonUtils.Deserialize<Problem409>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 413:
+                        throw new ContentTooLargeError(
+                            JsonUtils.Deserialize<object>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 415:
+                        throw new UnsupportedMediaTypeError(
+                            JsonUtils.Deserialize<object>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -339,7 +418,33 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 429:
                         throw new TooManyRequestsError(
+                            JsonUtils.Deserialize<Problem429>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 500:
+                        throw new InternalServerError(
                             JsonUtils.Deserialize<Problem>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 503:
+                        throw new ServiceUnavailableError(
+                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
+                                responseBody
+                            ),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -369,7 +474,7 @@ public partial class PracticesClient : IPracticesClient
         }
     }
 
-    private async Task<WithRawResponse<GetPracticeResponse>> GetAsyncCore(
+    private async Task<WithRawResponse<Practice>> GetAsyncCore(
         GetPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
@@ -407,8 +512,8 @@ public partial class PracticesClient : IPracticesClient
                 .ConfigureAwait(false);
             try
             {
-                var responseData = JsonUtils.Deserialize<GetPracticeResponse>(responseBody)!;
-                return new WithRawResponse<GetPracticeResponse>()
+                var responseData = JsonUtils.Deserialize<Practice>(responseBody)!;
+                return new WithRawResponse<Practice>()
                 {
                     Data = responseData,
                     RawResponse = new Affinity.RawResponse()
@@ -491,8 +596,8 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 409:
-                        throw new ConflictError(
+                    case 405:
+                        throw new MethodNotAllowedError(
                             JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
@@ -503,9 +608,9 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 422:
-                        throw new UnprocessableEntityError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
+                    case 413:
+                        throw new ContentTooLargeError(
+                            JsonUtils.Deserialize<object>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -517,7 +622,33 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 429:
                         throw new TooManyRequestsError(
+                            JsonUtils.Deserialize<Problem429>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 500:
+                        throw new InternalServerError(
                             JsonUtils.Deserialize<Problem>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 503:
+                        throw new ServiceUnavailableError(
+                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
+                                responseBody
+                            ),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -547,8 +678,8 @@ public partial class PracticesClient : IPracticesClient
         }
     }
 
-    private async Task<WithRawResponse<UpdatePracticeResponse>> UpdateAsyncCore(
-        UpdatePracticeRequest request,
+    private async Task<WithRawResponse<Practice>> UpdateAsyncCore(
+        UpdatePracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -557,7 +688,7 @@ public partial class PracticesClient : IPracticesClient
             .MergeAdditional(options?.AdditionalQueryParameters)
             .Build();
         var _headers = await new Affinity.Core.HeadersBuilder.Builder()
-            .Add("Idempotency-Key", request.IdempotencyKey ?? System.Guid.NewGuid().ToString()) // affinity-sdk-auto-key
+            .Add("Idempotency-Key", request.IdempotencyKey)
             .Add(_client.Options.Headers)
             .Add(_client.Options.AdditionalHeaders)
             .Add(options?.AdditionalHeaders)
@@ -588,8 +719,8 @@ public partial class PracticesClient : IPracticesClient
                 .ConfigureAwait(false);
             try
             {
-                var responseData = JsonUtils.Deserialize<UpdatePracticeResponse>(responseBody)!;
-                return new WithRawResponse<UpdatePracticeResponse>()
+                var responseData = JsonUtils.Deserialize<Practice>(responseBody)!;
+                return new WithRawResponse<Practice>()
                 {
                     Data = responseData,
                     RawResponse = new Affinity.RawResponse()
@@ -672,9 +803,45 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
+                    case 405:
+                        throw new MethodNotAllowedError(
+                            JsonUtils.Deserialize<Problem>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
                     case 409:
                         throw new ConflictError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
+                            JsonUtils.Deserialize<Problem409>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 413:
+                        throw new ContentTooLargeError(
+                            JsonUtils.Deserialize<object>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 415:
+                        throw new UnsupportedMediaTypeError(
+                            JsonUtils.Deserialize<object>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -698,7 +865,33 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 429:
                         throw new TooManyRequestsError(
+                            JsonUtils.Deserialize<Problem429>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 500:
+                        throw new InternalServerError(
                             JsonUtils.Deserialize<Problem>(responseBody),
+                            rawResponse: new Affinity.RawResponse()
+                            {
+                                StatusCode = response.Raw.StatusCode,
+                                Url =
+                                    response.Raw.RequestMessage?.RequestUri
+                                    ?? new Uri("about:blank"),
+                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
+                            }
+                        );
+                    case 503:
+                        throw new ServiceUnavailableError(
+                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
+                                responseBody
+                            ),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -729,118 +922,112 @@ public partial class PracticesClient : IPracticesClient
     }
 
     /// <summary>
-    /// Returns the practices that belong to the platform. The default Affinity-Version is 2026-09-28.
+    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a leading `-` reverses.
     /// </summary>
     /// <example><code>
-    /// await client.Practices.ListAsync(
-    ///     new ListPracticesRequest
-    ///     {
-    ///         EndingBefore = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///         StartingAfter = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
-    ///     }
-    /// );
+    /// await client.Practices.ListAsync(new ListPracticesRequest());
     /// </code></example>
-    public WithRawResponseTask<ListPracticesResponse> ListAsync(
+    public async Task<Pager<Practice>> ListAsync(
         ListPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<ListPracticesResponse>(
-            ListAsyncCore(request, options, cancellationToken)
-        );
+        if (request is not null)
+        {
+            request = request with { };
+        }
+        var pager = await CursorPager<
+            ListPracticesRequest,
+            RequestOptions?,
+            PracticeList,
+            string?,
+            Practice
+        >
+            .CreateInstanceAsync(
+                request,
+                options,
+                async (request, options, cancellationToken) =>
+                    await ListInternalAsync(request, options, cancellationToken).WithRawResponse(),
+                (request, cursor) =>
+                {
+                    request.StartingAfter = cursor;
+                },
+                response => response.NextCursor,
+                response => response.Data?.ToList(),
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        return pager;
     }
 
     /// <summary>
-    /// Creates a practice owned by the platform. Set liveEnabled to true to enable Live access at creation with an approved platform and a Live request. Defaults to false. Requires practices:write. Send Idempotency-Key when you retry the same request.
+    /// Platforms only. Name, phone and address are required. The practice starts in Test; `liveEnabled: true` also allows new Live orders, which needs a platform with Live access and a Live caller: a Live key, or a session in Live mode. Turning Live off later preserves access to existing records. A retry with the same key and body returns the stored first response, even if the practice has changed. Use GET /v1/practices/{practiceId} to read the current practice.
     /// </summary>
     /// <example><code>
     /// await client.Practices.CreateAsync(
-    ///     new CreatePracticeRequest
+    ///     new CreatePracticesRequest
     ///     {
-    ///         Address = new CreatePracticeRequestAddress
+    ///         IdempotencyKey = "Idempotency-Key",
+    ///         Address = new AddressInput
     ///         {
-    ///             City = "Los Angeles",
-    ///             Country = "US",
-    ///             Line1 = "100 Practice Way",
-    ///             PostalCode = "90001",
-    ///             State = "CA",
+    ///             Line1 = "line1",
+    ///             City = "city",
+    ///             State = "state",
+    ///             PostalCode = "postalCode",
     ///         },
-    ///         Attestations = new CreatePracticeRequestAttestations
-    ///         {
-    ///             AuthorizedPracticeRelationship = true,
-    ///             AuthorizedPhiTransfer = true,
-    ///             MinimumNecessaryPhi = true,
-    ///             ProviderDataAccuracy = true,
-    ///         },
-    ///         ExternalId = "practice_123",
-    ///         LegalName = "Example Medical Group PLLC",
-    ///         Metadata = new Dictionary&lt;string, object?&gt;() { { "key", "value" } },
-    ///         Name = "Example Medical Group",
-    ///         Prescribers = new List&lt;CreatePracticeRequestPrescribersItem&gt;()
-    ///         {
-    ///             new CreatePracticeRequestPrescribersItem
-    ///             {
-    ///                 Credentials = "MD",
-    ///                 LicenseStates = new List&lt;string&gt;() { "CA" },
-    ///                 Name = "Alex Morgan",
-    ///                 Npi = "1234567893",
-    ///             },
-    ///         },
-    ///         PrimaryContact = new CreatePracticeRequestPrimaryContact
-    ///         {
-    ///             Email = "operations@example-practice.com",
-    ///             Name = "Jordan Lee",
-    ///         },
-    ///         SupportEmail = "support@example-practice.com",
+    ///         Name = "name",
+    ///         Phone = "phone",
     ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<CreatePracticeResponse> CreateAsync(
-        CreatePracticeRequest request,
+    public WithRawResponseTask<Practice> CreateAsync(
+        CreatePracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<CreatePracticeResponse>(
+        return new WithRawResponseTask<Practice>(
             CreateAsyncCore(request, options, cancellationToken)
         );
     }
 
     /// <summary>
-    /// Returns one practice that belongs to the platform.
+    /// Read one practice accessible to the API key. A platform can read its own practices.
     /// </summary>
     /// <example><code>
     /// await client.Practices.GetAsync(
     ///     new GetPracticesRequest { PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc" }
     /// );
     /// </code></example>
-    public WithRawResponseTask<GetPracticeResponse> GetAsync(
+    public WithRawResponseTask<Practice> GetAsync(
         GetPracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<GetPracticeResponse>(
-            GetAsyncCore(request, options, cancellationToken)
-        );
+        return new WithRawResponseTask<Practice>(GetAsyncCore(request, options, cancellationToken));
     }
 
     /// <summary>
-    /// Updates one practice owned by the platform. Set liveEnabled to true or false to control Live access with an approved platform and a Live request. Affinity Admin decisions take precedence. Requires practices:write. Send Idempotency-Key when you retry the same request.
+    /// `liveEnabled` allows or refuses new Live orders. Existing records, cancellation, webhooks and billing keep working. Only its platform changes it; enabling requires platform Live access, and either change needs a Live caller: a Live key (403 live_key_required otherwise) or a session in Live mode (403 live_mode_required otherwise). Live orders send `name`, `phone` and `address` to the pharmacy, so a practice with Live access changes them only with a Live key (403 live_mode_required otherwise). A retry with the same key and body returns the stored first response, even if the practice has changed. Use GET /v1/practices/{practiceId} to read the current practice.
     /// </summary>
     /// <example><code>
     /// await client.Practices.UpdateAsync(
-    ///     new UpdatePracticeRequest { PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc" }
+    ///     new UpdatePracticesRequest
+    ///     {
+    ///         PracticeId = "prac_01j2y8m6jcc9tt24af5pw9x1bc",
+    ///         IdempotencyKey = "Idempotency-Key",
+    ///     }
     /// );
     /// </code></example>
-    public WithRawResponseTask<UpdatePracticeResponse> UpdateAsync(
-        UpdatePracticeRequest request,
+    public WithRawResponseTask<Practice> UpdateAsync(
+        UpdatePracticesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        return new WithRawResponseTask<UpdatePracticeResponse>(
+        return new WithRawResponseTask<Practice>(
             UpdateAsyncCore(request, options, cancellationToken)
         );
     }

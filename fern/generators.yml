@@ -1,0 +1,28 @@
+# Fern generates src/Affinity and src/Affinity.Test from spec/affinity.openapi.json;
+# scripts/generate.sh adds the x-fern names and pagination first and passes the package version.
+# Pinned: change a version only with a regenerated, tested SDK.
+api:
+  specs:
+    - openapi: ./openapi.json
+      settings:
+        respect-nullable-schemas: true
+groups:
+  csharp:
+    generators:
+      - name: fernapi/fern-csharp-sdk
+        version: 2.92.12
+        output:
+          location: local-file-system
+          path: ../.fern-output
+        metadata:
+          license: MIT
+        config:
+          namespace: Affinity
+          package-id: Affinity
+          client-class-name: AffinityClient
+          generate-documentation-file: true
+          package-metadata:
+            description: Server-side .NET client for the Affinity API.
+            authors: Affinity
+            repository-url: https://github.com/affinity-health/affinity-csharp
+            project-url: https://github.com/affinity-health/affinity-csharp

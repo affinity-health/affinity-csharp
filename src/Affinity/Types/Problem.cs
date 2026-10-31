@@ -14,11 +14,17 @@ public record Problem : IJsonOnDeserialized
     [JsonPropertyName("code")]
     public required string Code { get; set; }
 
-    [JsonPropertyName("data")]
-    public Dictionary<string, object?>? Data { get; set; }
-
     [JsonPropertyName("detail")]
     public required string Detail { get; set; }
+
+    [JsonPropertyName("title")]
+    public required string Title { get; set; }
+
+    [JsonPropertyName("type")]
+    public required string Type { get; set; }
+
+    [JsonPropertyName("issues")]
+    public IEnumerable<ProblemIssuesItem>? Issues { get; set; }
 
     [JsonPropertyName("instance")]
     public required string Instance { get; set; }
@@ -29,14 +35,8 @@ public record Problem : IJsonOnDeserialized
     [JsonPropertyName("status")]
     public required int Status { get; set; }
 
-    [JsonPropertyName("title")]
-    public required string Title { get; set; }
-
     [JsonPropertyName("traceId")]
     public string? TraceId { get; set; }
-
-    [JsonPropertyName("type")]
-    public required string Type { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

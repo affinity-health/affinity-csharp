@@ -1,11 +1,13 @@
-target/
-Cargo.lock
-**/bin/
-**/obj/
-packages/
-smoke/
-*.gem
-.bundle/
-vendor/
-Gemfile.lock
+# Build output
+bin/
+obj/
+*.nupkg
+*.snupkg
+artifacts/
+TestResults/
+# Fern working files (scripts/generate.sh)
+.fern-output/
+fern/openapi.json
+# Local secrets
 .env
+*.env
