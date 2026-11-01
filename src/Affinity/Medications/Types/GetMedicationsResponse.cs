@@ -35,6 +35,9 @@ public record GetMedicationsResponse : IJsonOnDeserialized
     [JsonPropertyName("defaultDirections")]
     public string? DefaultDirections { get; set; }
 
+    /// <summary>
+    /// What the pharmacy dispenses for one price, or null when the complete fill is unknown.
+    /// </summary>
     [JsonPropertyName("fill")]
     public Fill? Fill { get; set; }
 

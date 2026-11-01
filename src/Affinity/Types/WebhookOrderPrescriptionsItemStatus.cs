@@ -10,6 +10,10 @@ namespace Affinity;
 [Serializable]
 public readonly record struct WebhookOrderPrescriptionsItemStatus : IStringEnum
 {
+    public static readonly WebhookOrderPrescriptionsItemStatus AwaitingApproval = new(
+        Values.AwaitingApproval
+    );
+
     public static readonly WebhookOrderPrescriptionsItemStatus Submitted = new(Values.Submitted);
 
     public static readonly WebhookOrderPrescriptionsItemStatus Processing = new(Values.Processing);
@@ -120,6 +124,8 @@ public readonly record struct WebhookOrderPrescriptionsItemStatus : IStringEnum
     [Serializable]
     public static class Values
     {
+        public const string AwaitingApproval = "awaiting_approval";
+
         public const string Submitted = "submitted";
 
         public const string Processing = "processing";

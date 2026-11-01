@@ -13,7 +13,7 @@ public record ListWebhooksRequest
     public int? Limit { get; set; }
 
     /// <summary>
-    /// Page forward using the previous response's nextCursor. Keep the same filters, sort, organization and mode. Use only one cursor parameter.
+    /// Page forward using the previous response's nextCursor. Keep the same filters, sort, organization and mode.
     /// </summary>
     [JsonIgnore]
     public string? StartingAfter { get; set; }

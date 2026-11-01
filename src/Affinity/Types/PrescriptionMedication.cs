@@ -14,6 +14,9 @@ public record PrescriptionMedication : IJsonOnDeserialized
     private readonly IDictionary<string, JsonElement> _extensionData =
         new Dictionary<string, JsonElement>();
 
+    /// <summary>
+    /// What the pharmacy dispenses for one price, or null when the complete fill is unknown.
+    /// </summary>
     [JsonPropertyName("fill")]
     public Fill? Fill { get; set; }
 

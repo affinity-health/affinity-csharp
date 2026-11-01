@@ -33,7 +33,7 @@ public partial class AffinityClient : IAffinityClient
             new Dictionary<string, string>()
             {
                 { "Authorization", $"Bearer {token ?? ""}" },
-                { "Affinity-Version", "2026-10-28" },
+                { "Affinity-Version", "2026-11-01" },
             }
         );
         foreach (var header in authHeaders)

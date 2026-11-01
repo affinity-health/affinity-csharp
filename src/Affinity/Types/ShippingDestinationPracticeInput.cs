@@ -5,7 +5,7 @@ using global::System.Text.Json.Serialization;
 namespace Affinity;
 
 [Serializable]
-public record ShippingDestinationInputPatient : IJsonOnDeserialized
+public record ShippingDestinationPracticeInput : IJsonOnDeserialized
 {
     [JsonExtensionData]
     private readonly IDictionary<string, JsonElement> _extensionData =

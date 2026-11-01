@@ -155,14 +155,14 @@ try
         if (!ids.Contains(practice.Id)) throw new Exception("the new practice is not listed");
         return ids.Count;
     }, n => $"{n} practices");
-    await Check("practices.list sort -created (every page)", async () =>
+    await Check("practices.list sort created_desc (every page)", async () =>
     {
         var newest = new List<string>();
-        await foreach (var p in await client.Practices.ListAsync(new ListPracticesRequest { Limit = 1, Sort = ListPracticesRequestSort.CreatedDescending })) newest.Add(p.Id);
+        await foreach (var p in await client.Practices.ListAsync(new ListPracticesRequest { Limit = 1, Sort = ListPracticesRequestSort.CreatedDesc })) newest.Add(p.Id);
         var oldest = new List<string>();
         await foreach (var p in await client.Practices.ListAsync(new ListPracticesRequest { Limit = 1, Sort = ListPracticesRequestSort.Created })) oldest.Add(p.Id);
         oldest.Reverse();
-        if (newest.Count == 0 || !newest.SequenceEqual(oldest)) throw new Exception("sort -created is not the reverse of sort created");
+        if (newest.Count == 0 || !newest.SequenceEqual(oldest)) throw new Exception("sort created_desc is not the reverse of sort created");
         return newest.Count;
     }, n => $"{n} practices");
 

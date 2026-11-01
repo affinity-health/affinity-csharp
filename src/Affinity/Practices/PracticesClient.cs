@@ -14,7 +14,7 @@ public partial class PracticesClient : IPracticesClient
     }
 
     /// <summary>
-    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a leading `-` reverses.
+    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a `_desc` suffix reverses.
     /// </summary>
     private WithRawResponseTask<PracticeList> ListInternalAsync(
         ListPracticesRequest request,
@@ -921,7 +921,7 @@ public partial class PracticesClient : IPracticesClient
     }
 
     /// <summary>
-    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a leading `-` reverses.
+    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a `_desc` suffix reverses.
     /// </summary>
     /// <example><code>
     /// await client.Practices.ListAsync(new ListPracticesRequest());

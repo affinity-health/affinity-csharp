@@ -13,7 +13,7 @@ public record ListOrdersRequest
     public int? Limit { get; set; }
 
     /// <summary>
-    /// Page forward using the previous response's nextCursor. Keep the same filters, sort, organization and mode. Use only one cursor parameter.
+    /// Page forward using the previous response's nextCursor. Keep the same filters, sort, organization and mode.
     /// </summary>
     [JsonIgnore]
     public string? StartingAfter { get; set; }
@@ -67,7 +67,7 @@ public record ListOrdersRequest
     public ListOrdersRequestRecentlyShipped? RecentlyShipped { get; set; }
 
     /// <summary>
-    /// patient sorts the lowercase text firstName + space + lastName A to Z, then order ID; created sorts oldest first. A leading - reverses the order. Defaults to -created. Restart pagination after changing sort.
+    /// patient sorts the lowercase text firstName + space + lastName A to Z, then order ID; created sorts oldest first. A _desc suffix reverses the order. Defaults to created_desc. Restart pagination after changing sort.
     /// </summary>
     [JsonIgnore]
     public ListOrdersRequestSort? Sort { get; set; }

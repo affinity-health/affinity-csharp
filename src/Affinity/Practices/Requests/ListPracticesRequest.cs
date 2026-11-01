@@ -13,7 +13,7 @@ public record ListPracticesRequest
     public int? Limit { get; set; }
 
     /// <summary>
-    /// Page forward using the previous response's nextCursor. Keep the same filters, sort, organization and mode. Use only one cursor parameter.
+    /// Page forward using the previous response's nextCursor. Keep the same filters, sort, organization and mode.
     /// </summary>
     [JsonIgnore]
     public string? StartingAfter { get; set; }
@@ -31,7 +31,7 @@ public record ListPracticesRequest
     public string? Query { get; set; }
 
     /// <summary>
-    /// name and location sort A to Z; mode sorts Test before Live; created sorts oldest first. A leading - reverses the order. Defaults to -created. Missing locations sort last. Restart pagination after changing sort.
+    /// name and location sort A to Z; mode sorts Test before Live; created sorts oldest first. A _desc suffix reverses the order. Defaults to created_desc. Missing locations sort last. Restart pagination after changing sort.
     /// </summary>
     [JsonIgnore]
     public ListPracticesRequestSort? Sort { get; set; }

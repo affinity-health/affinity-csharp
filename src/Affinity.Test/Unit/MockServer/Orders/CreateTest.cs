@@ -129,7 +129,7 @@ public class CreateTest : BaseMockServerTest
                     "id": "id",
                     "name": "name"
                   },
-                  "status": "submitted",
+                  "status": "awaiting_approval",
                   "failureReason": "failureReason",
                   "medication": {
                     "fill": {
@@ -173,7 +173,7 @@ public class CreateTest : BaseMockServerTest
                     "id": "id",
                     "name": "name"
                   },
-                  "status": "submitted",
+                  "status": "awaiting_approval",
                   "failureReason": "failureReason",
                   "medication": {
                     "fill": {
@@ -232,16 +232,16 @@ public class CreateTest : BaseMockServerTest
                   "trackingUrl": "trackingUrl"
                 }
               ],
-              "status": "submitted",
+              "status": "awaiting_approval",
               "trackingUrl": "trackingUrl",
               "statusHistory": [
                 {
                   "createdAt": "2024-01-15T09:30:00.000Z",
-                  "status": "submitted"
+                  "status": "awaiting_approval"
                 },
                 {
                   "createdAt": "2024-01-15T09:30:00.000Z",
-                  "status": "submitted"
+                  "status": "awaiting_approval"
                 }
               ],
               "total": 1,
@@ -441,7 +441,7 @@ public class CreateTest : BaseMockServerTest
                     "id": "pharm_01j2y8m6jcc9tt24af5pw9x1bc",
                     "name": "name"
                   },
-                  "status": "submitted",
+                  "status": "awaiting_approval",
                   "failureReason": "failureReason",
                   "medication": {
                     "id": "med_01j2y8m6jcc9tt24af5pw9x1bc",
@@ -471,12 +471,12 @@ public class CreateTest : BaseMockServerTest
                   "trackingUrl": "trackingUrl"
                 }
               ],
-              "status": "submitted",
+              "status": "awaiting_approval",
               "trackingUrl": "trackingUrl",
               "statusHistory": [
                 {
                   "createdAt": "2024-01-15T09:30:00.000Z",
-                  "status": "submitted"
+                  "status": "awaiting_approval"
                 }
               ],
               "total": 1,

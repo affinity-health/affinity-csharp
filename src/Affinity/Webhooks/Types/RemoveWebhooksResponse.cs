@@ -11,6 +11,9 @@ public record RemoveWebhooksResponse : IJsonOnDeserialized
     private readonly IDictionary<string, JsonElement> _extensionData =
         new Dictionary<string, JsonElement>();
 
+    /// <summary>
+    /// Always true.
+    /// </summary>
     [JsonPropertyName("deleted")]
     public required bool Deleted { get; set; }
 

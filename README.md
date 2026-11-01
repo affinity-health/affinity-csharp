@@ -1,17 +1,17 @@
 # Affinity C# SDK
 
-Typed server-side .NET client for the Affinity API. It targets API version `2026-10-28` and sends it in `Affinity-Version` on every request. The package `Affinity` builds for .NET 8 and later, .NET Standard 2.0 and .NET Framework 4.6.2.
+Typed server-side .NET client for the Affinity API. It targets API version `2026-11-01` and sends it in `Affinity-Version` on every request. The package `Affinity` builds for .NET 8 and later, .NET Standard 2.0 and .NET Framework 4.6.2.
 
 Keep API keys on the server. Never put them in browser, desktop or mobile applications.
 
 ## Install
 
-The package is not on NuGet. Install it from GitHub at tag `v0.4.1`:
+The package is not on NuGet. Install it from GitHub at tag `v0.5.0`:
 
 ```sh
-git clone --branch v0.4.1 https://github.com/affinity-health/affinity-csharp.git
+git clone --branch v0.5.0 https://github.com/affinity-health/affinity-csharp.git
 dotnet pack affinity-csharp/src/Affinity/Affinity.csproj -c Release -o ./packages
-dotnet add package Affinity --version 0.4.1 --source ./packages
+dotnet add package Affinity --version 0.5.0 --source ./packages
 ```
 
 You can also reference `affinity-csharp/src/Affinity/Affinity.csproj` from your project with `<ProjectReference>`.
@@ -86,7 +86,7 @@ To read response headers on success, call `.WithRawResponse()`: `var result = aw
 | Setting | Default | Change with |
 | --- | --- | --- |
 | Base URL | `https://api.affinityrx.com` | `ClientOptions.BaseUrl` |
-| API version | `2026-10-28` (`Affinity-Version` header) | fixed for this SDK version |
+| API version | `2026-11-01` (`Affinity-Version` header) | fixed for this SDK version |
 | Retries | 2, for 408, 429 and 5xx responses, with exponential backoff that respects `Retry-After` | `ClientOptions.MaxRetries`, `RequestOptions.MaxRetries` |
 | Timeout | 30 seconds per attempt | `ClientOptions.Timeout`, `RequestOptions.Timeout` |
 

@@ -5,7 +5,7 @@ namespace Affinity;
 public partial interface IPracticesClient
 {
     /// <summary>
-    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a leading `-` reverses.
+    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a `_desc` suffix reverses.
     /// </summary>
     Task<Pager<Practice>> ListAsync(
         ListPracticesRequest request,

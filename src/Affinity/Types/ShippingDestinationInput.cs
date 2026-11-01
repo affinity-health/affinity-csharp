@@ -75,36 +75,36 @@ public record ShippingDestinationInput
     public bool IsAddress => Type == "address";
 
     /// <summary>
-    /// Returns the value as a <see cref="Affinity.ShippingDestinationInputPatient"/> if <see cref="Type"/> is 'patient', otherwise throws an exception.
+    /// Returns the value as a <see cref="Affinity.ShippingDestinationPatientInput"/> if <see cref="Type"/> is 'patient', otherwise throws an exception.
     /// </summary>
     /// <exception cref="Exception">Thrown when <see cref="Type"/> is not 'patient'.</exception>
-    public Affinity.ShippingDestinationInputPatient AsPatient() =>
+    public Affinity.ShippingDestinationPatientInput AsPatient() =>
         IsPatient
-            ? (Affinity.ShippingDestinationInputPatient)Value!
+            ? (Affinity.ShippingDestinationPatientInput)Value!
             : throw new global::System.Exception("ShippingDestinationInput.Type is not 'patient'");
 
     /// <summary>
-    /// Returns the value as a <see cref="Affinity.ShippingDestinationInputPractice"/> if <see cref="Type"/> is 'practice', otherwise throws an exception.
+    /// Returns the value as a <see cref="Affinity.ShippingDestinationPracticeInput"/> if <see cref="Type"/> is 'practice', otherwise throws an exception.
     /// </summary>
     /// <exception cref="Exception">Thrown when <see cref="Type"/> is not 'practice'.</exception>
-    public Affinity.ShippingDestinationInputPractice AsPractice() =>
+    public Affinity.ShippingDestinationPracticeInput AsPractice() =>
         IsPractice
-            ? (Affinity.ShippingDestinationInputPractice)Value!
+            ? (Affinity.ShippingDestinationPracticeInput)Value!
             : throw new global::System.Exception("ShippingDestinationInput.Type is not 'practice'");
 
     /// <summary>
-    /// Returns the value as a <see cref="Affinity.ShippingDestinationInputAddress"/> if <see cref="Type"/> is 'address', otherwise throws an exception.
+    /// Returns the value as a <see cref="Affinity.ShippingDestinationAddressInput"/> if <see cref="Type"/> is 'address', otherwise throws an exception.
     /// </summary>
     /// <exception cref="Exception">Thrown when <see cref="Type"/> is not 'address'.</exception>
-    public Affinity.ShippingDestinationInputAddress AsAddress() =>
+    public Affinity.ShippingDestinationAddressInput AsAddress() =>
         IsAddress
-            ? (Affinity.ShippingDestinationInputAddress)Value!
+            ? (Affinity.ShippingDestinationAddressInput)Value!
             : throw new global::System.Exception("ShippingDestinationInput.Type is not 'address'");
 
     public T Match<T>(
-        Func<Affinity.ShippingDestinationInputPatient, T> onPatient,
-        Func<Affinity.ShippingDestinationInputPractice, T> onPractice,
-        Func<Affinity.ShippingDestinationInputAddress, T> onAddress,
+        Func<Affinity.ShippingDestinationPatientInput, T> onPatient,
+        Func<Affinity.ShippingDestinationPracticeInput, T> onPractice,
+        Func<Affinity.ShippingDestinationAddressInput, T> onAddress,
         Func<string, object?, T> onUnknown_
     )
     {
@@ -118,9 +118,9 @@ public record ShippingDestinationInput
     }
 
     public void Visit(
-        Action<Affinity.ShippingDestinationInputPatient> onPatient,
-        Action<Affinity.ShippingDestinationInputPractice> onPractice,
-        Action<Affinity.ShippingDestinationInputAddress> onAddress,
+        Action<Affinity.ShippingDestinationPatientInput> onPatient,
+        Action<Affinity.ShippingDestinationPracticeInput> onPractice,
+        Action<Affinity.ShippingDestinationAddressInput> onAddress,
         Action<string, object?> onUnknown_
     )
     {
@@ -142,13 +142,13 @@ public record ShippingDestinationInput
     }
 
     /// <summary>
-    /// Attempts to cast the value to a <see cref="Affinity.ShippingDestinationInputPatient"/> and returns true if successful.
+    /// Attempts to cast the value to a <see cref="Affinity.ShippingDestinationPatientInput"/> and returns true if successful.
     /// </summary>
-    public bool TryAsPatient(out Affinity.ShippingDestinationInputPatient? value)
+    public bool TryAsPatient(out Affinity.ShippingDestinationPatientInput? value)
     {
         if (Type == "patient")
         {
-            value = (Affinity.ShippingDestinationInputPatient)Value!;
+            value = (Affinity.ShippingDestinationPatientInput)Value!;
             return true;
         }
         value = null;
@@ -156,13 +156,13 @@ public record ShippingDestinationInput
     }
 
     /// <summary>
-    /// Attempts to cast the value to a <see cref="Affinity.ShippingDestinationInputPractice"/> and returns true if successful.
+    /// Attempts to cast the value to a <see cref="Affinity.ShippingDestinationPracticeInput"/> and returns true if successful.
     /// </summary>
-    public bool TryAsPractice(out Affinity.ShippingDestinationInputPractice? value)
+    public bool TryAsPractice(out Affinity.ShippingDestinationPracticeInput? value)
     {
         if (Type == "practice")
         {
-            value = (Affinity.ShippingDestinationInputPractice)Value!;
+            value = (Affinity.ShippingDestinationPracticeInput)Value!;
             return true;
         }
         value = null;
@@ -170,13 +170,13 @@ public record ShippingDestinationInput
     }
 
     /// <summary>
-    /// Attempts to cast the value to a <see cref="Affinity.ShippingDestinationInputAddress"/> and returns true if successful.
+    /// Attempts to cast the value to a <see cref="Affinity.ShippingDestinationAddressInput"/> and returns true if successful.
     /// </summary>
-    public bool TryAsAddress(out Affinity.ShippingDestinationInputAddress? value)
+    public bool TryAsAddress(out Affinity.ShippingDestinationAddressInput? value)
     {
         if (Type == "address")
         {
-            value = (Affinity.ShippingDestinationInputAddress)Value!;
+            value = (Affinity.ShippingDestinationAddressInput)Value!;
             return true;
         }
         value = null;
@@ -239,25 +239,25 @@ public record ShippingDestinationInput
             var value = discriminator switch
             {
                 "patient" =>
-                    jsonWithoutDiscriminator.Deserialize<Affinity.ShippingDestinationInputPatient?>(
+                    jsonWithoutDiscriminator.Deserialize<Affinity.ShippingDestinationPatientInput?>(
                         options
                     )
                         ?? throw new JsonException(
-                            "Failed to deserialize Affinity.ShippingDestinationInputPatient"
+                            "Failed to deserialize Affinity.ShippingDestinationPatientInput"
                         ),
                 "practice" =>
-                    jsonWithoutDiscriminator.Deserialize<Affinity.ShippingDestinationInputPractice?>(
+                    jsonWithoutDiscriminator.Deserialize<Affinity.ShippingDestinationPracticeInput?>(
                         options
                     )
                         ?? throw new JsonException(
-                            "Failed to deserialize Affinity.ShippingDestinationInputPractice"
+                            "Failed to deserialize Affinity.ShippingDestinationPracticeInput"
                         ),
                 "address" =>
-                    jsonWithoutDiscriminator.Deserialize<Affinity.ShippingDestinationInputAddress?>(
+                    jsonWithoutDiscriminator.Deserialize<Affinity.ShippingDestinationAddressInput?>(
                         options
                     )
                         ?? throw new JsonException(
-                            "Failed to deserialize Affinity.ShippingDestinationInputAddress"
+                            "Failed to deserialize Affinity.ShippingDestinationAddressInput"
                         ),
                 _ => json.Deserialize<object?>(options),
             };
@@ -310,17 +310,17 @@ public record ShippingDestinationInput
     [Serializable]
     public struct Patient
     {
-        public Patient(Affinity.ShippingDestinationInputPatient value)
+        public Patient(Affinity.ShippingDestinationPatientInput value)
         {
             Value = value;
         }
 
-        internal Affinity.ShippingDestinationInputPatient Value { get; set; }
+        internal Affinity.ShippingDestinationPatientInput Value { get; set; }
 
         public override string ToString() => Value.ToString() ?? "null";
 
         public static implicit operator ShippingDestinationInput.Patient(
-            Affinity.ShippingDestinationInputPatient value
+            Affinity.ShippingDestinationPatientInput value
         ) => new(value);
     }
 
@@ -330,17 +330,17 @@ public record ShippingDestinationInput
     [Serializable]
     public struct Practice
     {
-        public Practice(Affinity.ShippingDestinationInputPractice value)
+        public Practice(Affinity.ShippingDestinationPracticeInput value)
         {
             Value = value;
         }
 
-        internal Affinity.ShippingDestinationInputPractice Value { get; set; }
+        internal Affinity.ShippingDestinationPracticeInput Value { get; set; }
 
         public override string ToString() => Value.ToString() ?? "null";
 
         public static implicit operator ShippingDestinationInput.Practice(
-            Affinity.ShippingDestinationInputPractice value
+            Affinity.ShippingDestinationPracticeInput value
         ) => new(value);
     }
 
@@ -350,17 +350,17 @@ public record ShippingDestinationInput
     [Serializable]
     public struct Address
     {
-        public Address(Affinity.ShippingDestinationInputAddress value)
+        public Address(Affinity.ShippingDestinationAddressInput value)
         {
             Value = value;
         }
 
-        internal Affinity.ShippingDestinationInputAddress Value { get; set; }
+        internal Affinity.ShippingDestinationAddressInput Value { get; set; }
 
         public override string ToString() => Value.ToString() ?? "null";
 
         public static implicit operator ShippingDestinationInput.Address(
-            Affinity.ShippingDestinationInputAddress value
+            Affinity.ShippingDestinationAddressInput value
         ) => new(value);
     }
 }

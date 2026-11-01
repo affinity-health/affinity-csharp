@@ -8,6 +8,8 @@ namespace Affinity;
 [Serializable]
 public readonly record struct OrderStatus : IStringEnum
 {
+    public static readonly OrderStatus AwaitingApproval = new(Values.AwaitingApproval);
+
     public static readonly OrderStatus Submitted = new(Values.Submitted);
 
     public static readonly OrderStatus Processing = new(Values.Processing);
@@ -116,6 +118,8 @@ public readonly record struct OrderStatus : IStringEnum
     [Serializable]
     public static class Values
     {
+        public const string AwaitingApproval = "awaiting_approval";
+
         public const string Submitted = "submitted";
 
         public const string Processing = "processing";

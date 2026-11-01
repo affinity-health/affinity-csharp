@@ -4,6 +4,9 @@ using global::System.Text.Json.Serialization;
 
 namespace Affinity;
 
+/// <summary>
+/// What the pharmacy dispenses for one price. A quantity counts `unit`, not fills, and is a whole number of fills: for a fill of 30 tablets, quantity 60 is two fills and costs twice the price. For a vial product, one fill is one vial and quantity counts vials.
+/// </summary>
 [Serializable]
 public record Fill : IJsonOnDeserialized
 {
