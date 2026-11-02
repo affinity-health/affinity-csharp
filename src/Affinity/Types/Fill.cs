@@ -1,5 +1,4 @@
 using Affinity.Core;
-using global::System.Text.Json;
 using global::System.Text.Json.Serialization;
 
 namespace Affinity;
@@ -8,11 +7,11 @@ namespace Affinity;
 /// What the pharmacy dispenses for one price. A quantity counts `unit`, not fills, and is a whole number of fills: for a fill of 30 tablets, quantity 60 is two fills and costs twice the price. For a vial product, one fill is one vial and quantity counts vials.
 /// </summary>
 [Serializable]
-public record Fill : IJsonOnDeserialized
+public record Fill : IJsonOnDeserialized, IJsonOnSerializing
 {
     [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
+    private readonly IDictionary<string, object?> _extensionData =
+        new Dictionary<string, object?>();
 
     /// <summary>
     /// How much one fill holds, in `unit`.
@@ -46,10 +45,13 @@ public record Fill : IJsonOnDeserialized
     public FillVolume? Volume { get; set; }
 
     [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    public AdditionalProperties AdditionalProperties { get; set; } = new();
 
     void IJsonOnDeserialized.OnDeserialized() =>
         AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    void IJsonOnSerializing.OnSerializing() =>
+        AdditionalProperties.CopyToExtensionData(_extensionData);
 
     /// <inheritdoc />
     public override string ToString()

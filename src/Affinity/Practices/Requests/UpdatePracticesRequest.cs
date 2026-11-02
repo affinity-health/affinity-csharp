@@ -21,9 +21,15 @@ public record UpdatePracticesRequest
     [JsonPropertyName("externalId")]
     public string? ExternalId { get; set; }
 
+    /// <summary>
+    /// Affinity merges the address parts you send into the saved address. An omitted part keeps its saved value. To move to an address with no suite, send `"line2": null` with the new `line1`, `city`, `state` and `postalCode`.
+    /// </summary>
     [JsonPropertyName("address")]
     public UpdatePracticesRequestAddress? Address { get; set; }
 
+    /// <summary>
+    /// Omit it or send null to leave Live unchanged.
+    /// </summary>
     [JsonPropertyName("liveEnabled")]
     public bool? LiveEnabled { get; set; }
 

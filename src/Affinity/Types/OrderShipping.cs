@@ -1,5 +1,4 @@
 using Affinity.Core;
-using global::System.Text.Json;
 using global::System.Text.Json.Serialization;
 
 namespace Affinity;
@@ -8,11 +7,11 @@ namespace Affinity;
 /// The shipping option and destination.
 /// </summary>
 [Serializable]
-public record OrderShipping : IJsonOnDeserialized
+public record OrderShipping : IJsonOnDeserialized, IJsonOnSerializing
 {
     [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
+    private readonly IDictionary<string, object?> _extensionData =
+        new Dictionary<string, object?>();
 
     /// <summary>
     /// The shipping option saved at signing, or null for historical orders without an option.
@@ -24,10 +23,13 @@ public record OrderShipping : IJsonOnDeserialized
     public required ShippingDestination Destination { get; set; }
 
     [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    public AdditionalProperties AdditionalProperties { get; set; } = new();
 
     void IJsonOnDeserialized.OnDeserialized() =>
         AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    void IJsonOnSerializing.OnSerializing() =>
+        AdditionalProperties.CopyToExtensionData(_extensionData);
 
     /// <inheritdoc />
     public override string ToString()

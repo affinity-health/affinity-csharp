@@ -15,7 +15,7 @@ public record UpdatePracticesRequestAddress : IJsonOnDeserialized
     public string? Line1 { get; set; }
 
     /// <summary>
-    /// The apartment or suite, or null when there is none. Empty text counts as null.
+    /// The apartment or suite. Send null or empty text to remove it. An omitted `line2` keeps the saved suite, also when `line1` changes.
     /// </summary>
     [JsonPropertyName("line2")]
     public string? Line2 { get; set; }

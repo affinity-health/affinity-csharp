@@ -1,5 +1,4 @@
 using Affinity.Core;
-using global::System.Text.Json;
 using global::System.Text.Json.Serialization;
 
 namespace Affinity;
@@ -8,11 +7,11 @@ namespace Affinity;
 /// The patient details saved when the order was signed.
 /// </summary>
 [Serializable]
-public record Patient : IJsonOnDeserialized
+public record Patient : IJsonOnDeserialized, IJsonOnSerializing
 {
     [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
+    private readonly IDictionary<string, object?> _extensionData =
+        new Dictionary<string, object?>();
 
     [JsonPropertyName("address")]
     public required Address Address { get; set; }
@@ -66,10 +65,13 @@ public record Patient : IJsonOnDeserialized
     public required string Phone { get; set; }
 
     [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    public AdditionalProperties AdditionalProperties { get; set; } = new();
 
     void IJsonOnDeserialized.OnDeserialized() =>
         AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    void IJsonOnSerializing.OnSerializing() =>
+        AdditionalProperties.CopyToExtensionData(_extensionData);
 
     /// <inheritdoc />
     public override string ToString()

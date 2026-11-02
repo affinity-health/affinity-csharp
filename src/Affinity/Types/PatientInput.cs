@@ -18,7 +18,7 @@ public record PatientInput : IJsonOnDeserialized
     public required AddressInput Address { get; set; }
 
     /// <summary>
-    /// The reported allergies; an empty list means no new allergies reported.
+    /// The reported allergies. Send `[]` when the patient reports no new allergies.
     /// </summary>
     [JsonPropertyName("allergies")]
     public IEnumerable<PatientInputAllergiesItem> Allergies { get; set; } =

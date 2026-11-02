@@ -1,15 +1,14 @@
 using Affinity.Core;
-using global::System.Text.Json;
 using global::System.Text.Json.Serialization;
 
 namespace Affinity;
 
 [Serializable]
-public record CreateWebhooksResponse : IJsonOnDeserialized
+public record CreateWebhooksResponse : IJsonOnDeserialized, IJsonOnSerializing
 {
     [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
+    private readonly IDictionary<string, object?> _extensionData =
+        new Dictionary<string, object?>();
 
     /// <summary>
     /// When the record was created.
@@ -48,10 +47,13 @@ public record CreateWebhooksResponse : IJsonOnDeserialized
     public required string Secret { get; set; }
 
     [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    public AdditionalProperties AdditionalProperties { get; set; } = new();
 
     void IJsonOnDeserialized.OnDeserialized() =>
         AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    void IJsonOnSerializing.OnSerializing() =>
+        AdditionalProperties.CopyToExtensionData(_extensionData);
 
     /// <inheritdoc />
     public override string ToString()

@@ -6,7 +6,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
-version="0.5.0"
+version="0.6.0"
 fern_version="$(jq -r .version fern/fern.config.json)"
 generator="fernapi/fern-csharp-sdk"
 generator_version="$(awk -v g="$generator" '$0 ~ "name: " g {found=1; next} found && /version:/ {print $2; exit}' fern/generators.yml)"

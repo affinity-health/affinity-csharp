@@ -3,8 +3,8 @@
 //   AFFINITY_API_KEY=sk_test_... [AFFINITY_BASE_URL=https://...] [AFFINITY_SMOKE_WEBHOOK_URL=https://...] \
 //     dotnet run --project tests/Affinity.Smoke
 //
-// `dotnet run --project tests/Affinity.Smoke -- webhook` runs only the offline webhook signature
-// checks; it needs no key. The smoke test refuses a Live key. Use a platform Test key: it creates a
+// `dotnet run --project tests/Affinity.Smoke -- webhook` runs only the offline checks (webhook
+// signatures, and decoding values and fields this SDK does not know); it needs no key. The smoke test refuses a Live key. Use a platform Test key: it creates a
 // practice and a Test order (sent to the API's test pharmacy) and cancels the order. With
 // AFFINITY_SMOKE_WEBHOOK_URL it also creates, updates and removes a webhook endpoint. Feedback is
 // sent only as an invalid request, so no one is notified. The API cannot remove a practice, so the
@@ -80,6 +80,48 @@ void WebhookChecks()
     Record("webhook missing header is refused", !AffinityWebhook.Verify(null, body, secret, at));
 }
 
+// A response with a value or field this SDK does not know decodes without an error. The contract
+// keeps response objects and value lists open: a later API version can add a status, a category or
+// a field. The fixture has an unknown order, prescription and history status, an unknown allergy
+// category and an added field at the root and in nested objects.
+async Task OpenValuesChecks()
+{
+    var fixture = await File.ReadAllTextAsync(
+        Path.Combine(AppContext.BaseDirectory, "order-unknown-values.json"));
+    var page = (string? cursor) =>
+        $"{{\"object\":\"list\",\"url\":\"/v1/orders\",\"data\":[{fixture}],\"hasMore\":{(cursor is null ? "false" : "true")},\"nextCursor\":{(cursor is null ? "null" : $"\"{cursor}\"")},\"addedField\":\"list\"}}";
+    var replies = new Queue<string>(new[] { fixture, page("cursor-a"), page(null) });
+    var client = new AffinityClient("sk_test_synthetic", new ClientOptions
+    {
+        BaseUrl = "https://api.example.test",
+        HttpClient = new HttpClient(new Replies(replies)),
+        MaxRetries = 0,
+    });
+    var order = await Check("an unknown status, category and added fields decode",
+        async () => (Order)await client.Orders.GetAsync(new GetOrdersRequest { OrderId = "ord_01j2y8m6jcc9tt24af5pw9x1bc" }));
+    if (order is not null)
+    {
+        Record("unknown order status is kept", order.Status.Value == "on_hold" && order.Status != OrderStatus.Submitted);
+        Record("unknown prescription status is kept", order.Prescriptions.First().Status.Value == "on_hold");
+        Record("history keeps known and unknown statuses",
+            order.StatusHistory.First().Status == StatusHistoryEntryStatus.Submitted && order.StatusHistory.Last().Status.Value == "on_hold");
+        Record("known category stays typed, unknown is kept",
+            order.Patient.Allergies.First().Category == AllergyCategory.Drug && order.Patient.Allergies.Last().Category.Value == "dust");
+        Record("added fields are kept at the root and nested",
+            order.AdditionalProperties["addedField"]?.ToString()?.Contains("nested") == true
+            && order.Patient.AdditionalProperties["addedField"]?.ToString() == "patient"
+            && order.Prescriptions.First().Medication.AdditionalProperties["addedField"]?.ToString() == "medication");
+    }
+    await Check("a list with unknown statuses iterates", async () =>
+    {
+        var statuses = new List<string>();
+        await foreach (var each in await client.Orders.ListAsync(new ListOrdersRequest()))
+            statuses.Add(each.Status.Value);
+        if (string.Join(",", statuses) != "on_hold,on_hold") throw new Exception(string.Join(",", statuses));
+        return statuses;
+    });
+}
+
 int Report()
 {
     foreach (var (name, ok, note) in results)
@@ -90,6 +132,7 @@ int Report()
 }
 
 WebhookChecks();
+await OpenValuesChecks();
 if (args.Contains("webhook")) return Report();
 
 var key = Environment.GetEnvironmentVariable("AFFINITY_API_KEY") ?? "";
@@ -356,3 +399,13 @@ finally
 }
 
 return Report();
+
+/// Answers each request with the next JSON body.
+sealed class Replies(Queue<string> bodies) : HttpMessageHandler
+{
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+        Task.FromResult(new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+        {
+            Content = new StringContent(bodies.Dequeue(), Encoding.UTF8, "application/json"),
+        });
+}

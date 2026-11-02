@@ -1,15 +1,14 @@
 using Affinity.Core;
-using global::System.Text.Json;
 using global::System.Text.Json.Serialization;
 
 namespace Affinity;
 
 [Serializable]
-public record Medication : IJsonOnDeserialized
+public record Medication : IJsonOnDeserialized, IJsonOnSerializing
 {
     [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
+    private readonly IDictionary<string, object?> _extensionData =
+        new Dictionary<string, object?>();
 
     /// <summary>
     /// What the medication is prescribed for. Every strength, form and pharmacy of one medication has the same category.
@@ -117,10 +116,13 @@ public record Medication : IJsonOnDeserialized
     public string? Strength { get; set; }
 
     [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    public AdditionalProperties AdditionalProperties { get; set; } = new();
 
     void IJsonOnDeserialized.OnDeserialized() =>
         AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    void IJsonOnSerializing.OnSerializing() =>
+        AdditionalProperties.CopyToExtensionData(_extensionData);
 
     /// <inheritdoc />
     public override string ToString()
