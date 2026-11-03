@@ -24,6 +24,12 @@ public record ListMedicationsRequest
     [JsonIgnore]
     public string? StartingAfter { get; set; }
 
+    /// <summary>
+    /// Match medication names that contain every word of this text, in any order, ignoring case and accents. Each word must appear in the name, so a misspelled word matches nothing. Strength, form and pharmacy are not searched. An empty query lists every medication. Restart pagination after changing query.
+    /// </summary>
+    [JsonIgnore]
+    public string? Query { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

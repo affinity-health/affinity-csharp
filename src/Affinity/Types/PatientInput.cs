@@ -67,10 +67,16 @@ public record PatientInput : IJsonOnDeserialized
     public required string Phone { get; set; }
 
     /// <summary>
-    /// Your patient identifier within the practice and mode; omit it to create a new patient for each order.
+    /// Your patient identifier within the practice and mode. Omit it and id to create a new patient for each order. With id, send the saved patient's externalId or omit it. If the saved patient has none, this value is added to it.
     /// </summary>
     [JsonPropertyName("externalId")]
     public string? ExternalId { get; set; }
+
+    /// <summary>
+    /// The pat_ ID of a saved patient of the order's practice, in the same Test or Live mode. The order reuses that patient and updates it from the sent fields. Send all other patient fields as usual. GET /v1/orders returns the patientId of each order. An unknown ID, or an ID of a different practice or mode, returns 404 not_found.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();

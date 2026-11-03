@@ -302,6 +302,7 @@ public class CreateTest : BaseMockServerTest
                     MiddleName = null,
                     Phone = "phone",
                     ExternalId = null,
+                    Id = null,
                 },
                 PracticeId = null,
                 Prescriber = null,

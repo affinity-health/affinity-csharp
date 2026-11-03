@@ -238,6 +238,19 @@ try
     await Check("medications.list for a practice", async () =>
         await client.Medications.ListAsync(new ListMedicationsRequest { Limit = 5, PracticeId = practice.Id }),
         p => $"{p.CurrentPage.Items.Count}");
+    // Query matches names that contain every word, ignoring case. Search for the chosen
+    // medication's longest word.
+    var word = System.Text.RegularExpressions.Regex.Split(medication.Name, "[^A-Za-z]+")
+        .OrderByDescending(w => w.Length).First().ToLowerInvariant();
+    await Check("medications.list query", async () =>
+    {
+        var found = new List<Medication>();
+        await foreach (var m in await client.Medications.ListAsync(new ListMedicationsRequest { Query = word })) found.Add(m);
+        if (!found.Any(m => m.Id == medication.Id)) throw new Exception($"{medication.Id} is not in the results");
+        var other = found.FirstOrDefault(m => !m.Name.ToLowerInvariant().Contains(word));
+        if (other is not null) throw new Exception($"\"{other.Name}\" does not contain \"{word}\"");
+        return found.Count;
+    }, n => $"\"{word}\": {n} of {medications!.Count}");
 
     OrderInput OrderInput(int quantity) => new()
     {
