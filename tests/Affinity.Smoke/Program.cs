@@ -175,7 +175,7 @@ try
             IdempotencyKey = NewKey(),
             Name = label,
             Phone = "+15125550100",
-            Address = new AddressInput { Line1 = "100 Congress Ave", City = "Austin", State = "TX", PostalCode = "78701" },
+            Address = new PracticeAddressInput { Line1 = "100 Congress Ave", City = "Austin", State = "TX", PostalCode = "78701" },
         }), p => p.Id);
     if (practice is null) throw new InvalidOperationException("No practice; stopping.");
     await Check("practices.get", async () => await client.Practices.GetAsync(new GetPracticesRequest { PracticeId = practice.Id }),
