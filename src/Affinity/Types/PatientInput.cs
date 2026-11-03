@@ -36,6 +36,9 @@ public record PatientInput : IJsonOnDeserialized
     [JsonPropertyName("email")]
     public required string Email { get; set; }
 
+    /// <summary>
+    /// The first name.
+    /// </summary>
     [JsonPropertyName("firstName")]
     public required string FirstName { get; set; }
 
@@ -45,6 +48,9 @@ public record PatientInput : IJsonOnDeserialized
     [JsonPropertyName("sex")]
     public required PatientInputSex Sex { get; set; }
 
+    /// <summary>
+    /// The last name.
+    /// </summary>
     [JsonPropertyName("lastName")]
     public required string LastName { get; set; }
 

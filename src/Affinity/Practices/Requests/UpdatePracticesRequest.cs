@@ -6,6 +6,9 @@ namespace Affinity;
 [Serializable]
 public record UpdatePracticesRequest
 {
+    /// <summary>
+    /// The practice ID.
+    /// </summary>
     [JsonIgnore]
     public required string PracticeId { get; set; }
 
@@ -33,6 +36,9 @@ public record UpdatePracticesRequest
     [JsonPropertyName("liveEnabled")]
     public bool? LiveEnabled { get; set; }
 
+    /// <summary>
+    /// Text with at least one visible character.
+    /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 

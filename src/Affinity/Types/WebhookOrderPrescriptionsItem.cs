@@ -23,7 +23,7 @@ public record WebhookOrderPrescriptionsItem : IJsonOnDeserialized, IJsonOnSerial
     public required WebhookOrderPrescriptionsItemStatus Status { get; set; }
 
     /// <summary>
-    /// The failure or cancellation refusal reason, or null when there is none.
+    /// Why the order failed, for a person to read. Null unless the order failed; a refused cancel leaves it null.
     /// </summary>
     [JsonPropertyName("failureReason")]
     public string? FailureReason { get; set; }

@@ -23,13 +23,13 @@ public record Order : IJsonOnDeserialized, IJsonOnSerializing
     public required DateTime CreatedAt { get; set; }
 
     /// <summary>
-    /// Your order identifier, unique within the practice and mode.
+    /// Your order identifier, unique within the practice and mode. A failed or cancelled order keeps it.
     /// </summary>
     [JsonPropertyName("externalOrderId")]
     public string? ExternalOrderId { get; set; }
 
     /// <summary>
-    /// The failure or cancellation refusal reason, or null when there is none.
+    /// Why the order failed, for a person to read. Null unless the order failed; a refused cancel leaves it null.
     /// </summary>
     [JsonPropertyName("failureReason")]
     public string? FailureReason { get; set; }
@@ -98,7 +98,7 @@ public record Order : IJsonOnDeserialized, IJsonOnSerializing
     public required OrderStatus Status { get; set; }
 
     /// <summary>
-    /// The carrier's tracking page for the newest package, or null before the order ships.
+    /// The carrier's tracking page for the newest package. Null when there is no package yet or the carrier has no tracking page.
     /// </summary>
     [JsonPropertyName("trackingUrl")]
     public string? TrackingUrl { get; set; }

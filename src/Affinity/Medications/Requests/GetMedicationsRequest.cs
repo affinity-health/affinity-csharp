@@ -6,6 +6,9 @@ namespace Affinity;
 [Serializable]
 public record GetMedicationsRequest
 {
+    /// <summary>
+    /// The medication ID.
+    /// </summary>
     [JsonIgnore]
     public required string MedicationId { get; set; }
 

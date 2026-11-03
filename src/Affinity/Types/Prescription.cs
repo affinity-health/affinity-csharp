@@ -32,13 +32,13 @@ public record Prescription : IJsonOnDeserialized, IJsonOnSerializing
     public required PharmacyReference Pharmacy { get; set; }
 
     /// <summary>
-    /// The current fulfillment status.
+    /// The order's current status; every prescription of the order has the same value.
     /// </summary>
     [JsonPropertyName("status")]
     public required PrescriptionStatus Status { get; set; }
 
     /// <summary>
-    /// The failure or cancellation refusal reason, or null when there is none.
+    /// Why the order failed, for a person to read; every prescription of the order has the same value. Null unless the order failed; a refused cancel leaves it null.
     /// </summary>
     [JsonPropertyName("failureReason")]
     public string? FailureReason { get; set; }
@@ -56,7 +56,7 @@ public record Prescription : IJsonOnDeserialized, IJsonOnSerializing
     public string? Notes { get; set; }
 
     /// <summary>
-    /// The price in integer cents.
+    /// The prescription's price in integer cents: with a fill, the price per fill times the number of fills.
     /// </summary>
     [JsonPropertyName("price")]
     public required int Price { get; set; }

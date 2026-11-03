@@ -6,12 +6,12 @@ Keep API keys on the server. Never put them in browser, desktop or mobile applic
 
 ## Install
 
-The package is not on NuGet. Install it from GitHub at tag `v0.6.0`:
+The package is not on NuGet. Install it from GitHub at tag `v0.7.0`:
 
 ```sh
-git clone --branch v0.6.0 https://github.com/affinity-health/affinity-csharp.git
+git clone --branch v0.7.0 https://github.com/affinity-health/affinity-csharp.git
 dotnet pack affinity-csharp/src/Affinity/Affinity.csproj -c Release -o ./packages
-dotnet add package Affinity --version 0.6.0 --source ./packages
+dotnet add package Affinity --version 0.7.0 --source ./packages
 ```
 
 You can also reference `affinity-csharp/src/Affinity/Affinity.csproj` from your project with `<ProjectReference>`.

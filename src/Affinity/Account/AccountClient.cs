@@ -1,6 +1,5 @@
 using Affinity.Core;
 using global::System.Text.Json;
-using OneOf;
 
 namespace Affinity;
 
@@ -131,21 +130,9 @@ public partial class AccountClient : IAccountClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -181,9 +168,7 @@ public partial class AccountClient : IAccountClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,

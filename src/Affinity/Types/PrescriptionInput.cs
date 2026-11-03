@@ -17,6 +17,9 @@ public record PrescriptionInput : IJsonOnDeserialized
     [JsonPropertyName("compoundingReason")]
     public string? CompoundingReason { get; set; }
 
+    /// <summary>
+    /// The prescriber's directions for use.
+    /// </summary>
     [JsonPropertyName("directions")]
     public required string Directions { get; set; }
 

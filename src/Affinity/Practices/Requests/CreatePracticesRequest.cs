@@ -24,6 +24,9 @@ public record CreatePracticesRequest
     [JsonPropertyName("liveEnabled")]
     public bool? LiveEnabled { get; set; }
 
+    /// <summary>
+    /// Text with at least one visible character.
+    /// </summary>
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 

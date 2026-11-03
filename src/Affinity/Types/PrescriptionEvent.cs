@@ -3,6 +3,9 @@ using global::System.Text.Json.Serialization;
 
 namespace Affinity;
 
+/// <summary>
+/// An event about one prescription of an order. Affinity does not send these yet: no released pharmacy reports a prescription apart from its order. Handle them so that a later release does not break your receiver.
+/// </summary>
 [Serializable]
 public record PrescriptionEvent : IJsonOnDeserialized, IJsonOnSerializing
 {

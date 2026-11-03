@@ -23,9 +23,15 @@ public record PrescriberInput : IJsonOnDeserialized
     [JsonPropertyName("address")]
     public AddressInput? Address { get; set; }
 
+    /// <summary>
+    /// The first name.
+    /// </summary>
     [JsonPropertyName("firstName")]
     public required string FirstName { get; set; }
 
+    /// <summary>
+    /// The last name.
+    /// </summary>
     [JsonPropertyName("lastName")]
     public required string LastName { get; set; }
 

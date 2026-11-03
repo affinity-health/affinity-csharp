@@ -14,6 +14,9 @@ public record AddressInput : IJsonOnDeserialized
     private readonly IDictionary<string, JsonElement> _extensionData =
         new Dictionary<string, JsonElement>();
 
+    /// <summary>
+    /// The street address.
+    /// </summary>
     [JsonPropertyName("line1")]
     public required string Line1 { get; set; }
 
@@ -23,6 +26,9 @@ public record AddressInput : IJsonOnDeserialized
     [JsonPropertyName("line2")]
     public string? Line2 { get; set; }
 
+    /// <summary>
+    /// The city name.
+    /// </summary>
     [JsonPropertyName("city")]
     public required string City { get; set; }
 

@@ -12,6 +12,9 @@ public record CreateFeedbackRequest
     [JsonIgnore]
     public required string IdempotencyKey { get; set; }
 
+    /// <summary>
+    /// Text with at least one visible character.
+    /// </summary>
     [JsonPropertyName("message")]
     public required string Message { get; set; }
 
@@ -19,7 +22,7 @@ public record CreateFeedbackRequest
     public string? PageUrl { get; set; }
 
     /// <summary>
-    /// The `requestId` of the response, as the API returned it.
+    /// The `requestId` of the response, as the API returned it: a UUID or its `req_` form.
     /// </summary>
     [JsonPropertyName("requestId")]
     public string? RequestId { get; set; }

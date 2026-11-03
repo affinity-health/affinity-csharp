@@ -6,6 +6,9 @@ namespace Affinity;
 [Serializable]
 public record GetOrdersRequest
 {
+    /// <summary>
+    /// The order ID.
+    /// </summary>
     [JsonIgnore]
     public required string OrderId { get; set; }
 

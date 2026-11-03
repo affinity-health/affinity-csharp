@@ -1,6 +1,5 @@
 using Affinity.Core;
 using global::System.Text.Json;
-using OneOf;
 
 namespace Affinity;
 
@@ -14,7 +13,7 @@ public partial class PracticesClient : IPracticesClient
     }
 
     /// <summary>
-    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a `_desc` suffix reverses.
+    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (without Live access, then with it) or `created` (oldest first); a `_desc` suffix reverses.
     /// </summary>
     private WithRawResponseTask<PracticeList> ListInternalAsync(
         ListPracticesRequest request,
@@ -151,21 +150,9 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -201,9 +188,7 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -355,18 +340,6 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 409:
                         throw new ConflictError(
                             JsonUtils.Deserialize<Problem409>(responseBody),
@@ -381,7 +354,7 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -441,9 +414,7 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -595,21 +566,9 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -645,9 +604,7 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -802,18 +759,6 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 409:
                         throw new ConflictError(
                             JsonUtils.Deserialize<Problem409>(responseBody),
@@ -828,7 +773,7 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -888,9 +833,7 @@ public partial class PracticesClient : IPracticesClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -921,7 +864,7 @@ public partial class PracticesClient : IPracticesClient
     }
 
     /// <summary>
-    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (Test before Live) or `created` (oldest first); a `_desc` suffix reverses.
+    /// List the platform's practices, newest first. Available to platforms only. `sort` takes `name` or `location` (A to Z, practices without a location last), `mode` (without Live access, then with it) or `created` (oldest first); a `_desc` suffix reverses.
     /// </summary>
     /// <example><code>
     /// await client.Practices.ListAsync(new ListPracticesRequest());
@@ -1009,7 +952,7 @@ public partial class PracticesClient : IPracticesClient
     }
 
     /// <summary>
-    /// `liveEnabled` allows or refuses new Live orders. Existing records, cancellation, webhooks and billing keep working. Only its platform changes it; enabling requires platform Live access, and either change needs a Live caller: a Live key (403 live_key_required otherwise) or a session in Live mode (403 live_mode_required otherwise). Live orders send `name`, `phone` and `address` to the pharmacy, so a practice with Live access changes them only with a Live key (403 live_mode_required otherwise). A retry with the same key and body returns the stored first response, even if the practice has changed. Use GET /v1/practices/{practiceId} to read the current practice.
+    /// `liveEnabled` allows or refuses new Live orders. Existing records, cancellation, webhooks and billing keep working. Only its platform changes it; enabling requires platform Live access, and either change needs a Live caller: a Live key (403 live_key_required otherwise) or a session in Live mode (403 live_mode_required otherwise). Live orders send `name`, `phone` and `address` to the pharmacy, so a practice with Live access changes them only in Live mode, with a Live key or a session in Live mode (403 live_mode_required otherwise). A retry with the same key and body returns the stored first response, even if the practice has changed. Use GET /v1/practices/{practiceId} to read the current practice.
     /// </summary>
     /// <example><code>
     /// await client.Practices.UpdateAsync(

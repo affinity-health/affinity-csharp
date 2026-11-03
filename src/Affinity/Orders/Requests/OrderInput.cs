@@ -13,7 +13,7 @@ public record OrderInput
     public required string IdempotencyKey { get; set; }
 
     /// <summary>
-    /// Your order identifier, unique within the practice and mode.
+    /// Your order identifier, unique within the practice and mode. A failed or cancelled order keeps it, so send a new one for a replacement order.
     /// </summary>
     [JsonPropertyName("externalOrderId")]
     public string? ExternalOrderId { get; set; }

@@ -1,6 +1,5 @@
 using Affinity.Core;
 using global::System.Text.Json;
-using OneOf;
 
 namespace Affinity;
 
@@ -157,21 +156,9 @@ public partial class OrdersClient : IOrdersClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -207,9 +194,7 @@ public partial class OrdersClient : IOrdersClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -361,18 +346,6 @@ public partial class OrdersClient : IOrdersClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 409:
                         throw new ConflictError(
                             JsonUtils.Deserialize<Problem409>(responseBody),
@@ -387,7 +360,7 @@ public partial class OrdersClient : IOrdersClient
                         );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -447,9 +420,7 @@ public partial class OrdersClient : IOrdersClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -601,21 +572,9 @@ public partial class OrdersClient : IOrdersClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -651,9 +610,7 @@ public partial class OrdersClient : IOrdersClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -806,18 +763,6 @@ public partial class OrdersClient : IOrdersClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 405:
-                        throw new MethodNotAllowedError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 409:
                         throw new ConflictError(
                             JsonUtils.Deserialize<Problem409>(responseBody),
@@ -832,7 +777,7 @@ public partial class OrdersClient : IOrdersClient
                         );
                     case 413:
                         throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<object>(responseBody),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -880,9 +825,7 @@ public partial class OrdersClient : IOrdersClient
                         );
                     case 503:
                         throw new ServiceUnavailableError(
-                            JsonUtils.Deserialize<OneOf<Problem, ServiceUnavailableErrorBodyCode>>(
-                                responseBody
-                            ),
+                            JsonUtils.Deserialize<Problem>(responseBody),
                             rawResponse: new Affinity.RawResponse()
                             {
                                 StatusCode = response.Raw.StatusCode,
@@ -953,7 +896,7 @@ public partial class OrdersClient : IOrdersClient
     }
 
     /// <summary>
-    /// One request creates the order, signs it and sends it to the pharmacy. Platforms must send practiceId; practice callers can omit it to use their own practice. With an API key, name the prescriber and send signatureAttestation. Optional prescriber phone and address each default to the practice; no account is looked up by NPI. In the app, the signed-in member signs with the NPI in their settings, or names the prescriber with the same attestation. The patient is found by patient.externalId and updated from the order. Live orders require Live access on the practice and its platform. No payment method is required.
+    /// One request creates the order, signs it and sends it to the pharmacy. Platforms must send practiceId; practice callers can omit it to use their own practice. With an API key, name the prescriber and send signatureAttestation. Optional prescriber phone and address each default to the practice; no account is looked up by NPI. In the app, the signed-in member signs with the NPI in their settings, or names the prescriber with the same attestation. With patient.externalId, the order reuses that patient of the practice and mode and updates the saved record; without it, each order creates a new patient. When the pharmacy already holds the patient's name, a different firstName or lastName returns 422 invalid_order. Live orders require Live access on the practice and its platform. No payment method is required.
     /// </summary>
     /// <example><code>
     /// await client.Orders.CreateAsync(
@@ -1024,7 +967,7 @@ public partial class OrdersClient : IOrdersClient
     }
 
     /// <summary>
-    /// 200 with status cancelled when the cancel is confirmed. 202 with cancelRequestedAt when the pharmacy has not confirmed yet: you get order.cancelled when it confirms, or, when it refuses, cancelRequestedAt becomes null and you get order.updated. If an earlier ask may have reached the pharmacy, a refusal keeps cancelRequestedAt and sends no event until the pharmacy ends the order (order.cancelled or order.shipped). 409 when the pharmacy refuses or the order has shipped.
+    /// 200 with status cancelled when the cancel is confirmed. 202 with cancelRequestedAt when the pharmacy has not confirmed yet: you get order.cancelled when it confirms, or, when it refuses, cancelRequestedAt becomes null and you get order.updated. If an earlier ask may have reached the pharmacy, a refusal keeps cancelRequestedAt and sends no event until the pharmacy ends the order (order.cancelled or order.shipped). 409 cannot_cancel when the order is shipped, delivered or failed. 409 cancel_refused when the pharmacy refused the cancel, or when Affinity could not reach the pharmacy; only the second says to retry with a new Idempotency-Key.
     /// </summary>
     /// <example><code>
     /// await client.Orders.CancelAsync(

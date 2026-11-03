@@ -6,6 +6,9 @@ namespace Affinity;
 [Serializable]
 public record RemoveWebhooksRequest
 {
+    /// <summary>
+    /// The webhook endpoint ID.
+    /// </summary>
     [JsonIgnore]
     public required string WebhookEndpointId { get; set; }
 

@@ -23,7 +23,7 @@ public record OrderShippingOption : IJsonOnDeserialized, IJsonOnSerializing
     public required string Name { get; set; }
 
     /// <summary>
-    /// The price in integer cents.
+    /// The shipping price charged, in integer cents.
     /// </summary>
     [JsonPropertyName("price")]
     public required int Price { get; set; }

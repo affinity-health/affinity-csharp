@@ -17,6 +17,9 @@ public record PatientInputAllergiesItem : IJsonOnDeserialized
     [JsonPropertyName("category")]
     public required PatientInputAllergiesItemCategory Category { get; set; }
 
+    /// <summary>
+    /// The reported allergy name.
+    /// </summary>
     [JsonPropertyName("display")]
     public required string Display { get; set; }
 
