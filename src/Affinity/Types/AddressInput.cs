@@ -21,7 +21,7 @@ public record AddressInput : IJsonOnDeserialized
     public required string Line1 { get; set; }
 
     /// <summary>
-    /// The apartment or suite, or null when there is none. Empty text counts as null.
+    /// The apartment or suite, or null when there is none. Empty text, N/A, NA, none and - count as null. See notes, TBD and unknown return 422.
     /// </summary>
     [JsonPropertyName("line2")]
     public string? Line2 { get; set; }

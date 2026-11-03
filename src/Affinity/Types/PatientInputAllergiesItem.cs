@@ -18,7 +18,7 @@ public record PatientInputAllergiesItem : IJsonOnDeserialized
     public required PatientInputAllergiesItemCategory Category { get; set; }
 
     /// <summary>
-    /// The reported allergy name.
+    /// The reported allergy name. A whole-value no-allergy statement (NKDA, NKFA, none, unknown, denies, no, N/A and the same kind of phrase) returns 422, ignoring case, dots, hyphens, slashes, spaces and a trailing period. Send `[]` instead.
     /// </summary>
     [JsonPropertyName("display")]
     public required string Display { get; set; }

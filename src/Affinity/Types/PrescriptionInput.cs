@@ -12,13 +12,13 @@ public record PrescriptionInput : IJsonOnDeserialized
         new Dictionary<string, JsonElement>();
 
     /// <summary>
-    /// The reason for compounding, required when the medication's requirements include it. Empty text counts as null.
+    /// One of the medication's compoundingReasons values, required when the medication's requirements include it. Another value returns 422. Empty text counts as null.
     /// </summary>
     [JsonPropertyName("compoundingReason")]
     public string? CompoundingReason { get; set; }
 
     /// <summary>
-    /// The prescriber's directions for use.
+    /// The prescriber's directions for use, as the clinician wrote them. None, N/A, NA, TBD, unknown and see notes return 422.
     /// </summary>
     [JsonPropertyName("directions")]
     public required string Directions { get; set; }

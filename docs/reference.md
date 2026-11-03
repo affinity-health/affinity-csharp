@@ -575,7 +575,7 @@ await client.Practices.CreateAsync(
     new CreatePracticesRequest
     {
         IdempotencyKey = "Idempotency-Key",
-        Address = new AddressInput
+        Address = new PracticeAddressInput
         {
             Line1 = "line1",
             City = "city",

@@ -37,7 +37,7 @@ public record PatientInput : IJsonOnDeserialized
     public required string Email { get; set; }
 
     /// <summary>
-    /// The first name.
+    /// The first name. N/A, TBD, unknown and none return 422.
     /// </summary>
     [JsonPropertyName("firstName")]
     public required string FirstName { get; set; }
@@ -49,7 +49,7 @@ public record PatientInput : IJsonOnDeserialized
     public required PatientInputSex Sex { get; set; }
 
     /// <summary>
-    /// The last name.
+    /// The last name. N/A, TBD, unknown and none return 422.
     /// </summary>
     [JsonPropertyName("lastName")]
     public required string LastName { get; set; }

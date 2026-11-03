@@ -150,18 +150,6 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 413:
-                        throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 429:
                         throw new TooManyRequestsError(
                             JsonUtils.Deserialize<Problem429>(responseBody),
@@ -566,18 +554,6 @@ public partial class PracticesClient : IPracticesClient
                                 Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
                             }
                         );
-                    case 413:
-                        throw new ContentTooLargeError(
-                            JsonUtils.Deserialize<Problem>(responseBody),
-                            rawResponse: new Affinity.RawResponse()
-                            {
-                                StatusCode = response.Raw.StatusCode,
-                                Url =
-                                    response.Raw.RequestMessage?.RequestUri
-                                    ?? new Uri("about:blank"),
-                                Headers = ResponseHeaders.FromHttpResponseMessage(response.Raw),
-                            }
-                        );
                     case 429:
                         throw new TooManyRequestsError(
                             JsonUtils.Deserialize<Problem429>(responseBody),
@@ -911,7 +887,7 @@ public partial class PracticesClient : IPracticesClient
     ///     new CreatePracticesRequest
     ///     {
     ///         IdempotencyKey = "Idempotency-Key",
-    ///         Address = new AddressInput
+    ///         Address = new PracticeAddressInput
     ///         {
     ///             Line1 = "line1",
     ///             City = "city",

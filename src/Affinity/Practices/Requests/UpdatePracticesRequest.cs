@@ -25,7 +25,7 @@ public record UpdatePracticesRequest
     public string? ExternalId { get; set; }
 
     /// <summary>
-    /// Affinity merges the address parts you send into the saved address. An omitted part keeps its saved value. To move to an address with no suite, send `"line2": null` with the new `line1`, `city`, `state` and `postalCode`.
+    /// Affinity merges the address parts you send into the saved address. An omitted part keeps its saved value. To move to an address with no suite, send `"line2": null` with the new `line1`, `city`, `state` and `postalCode`. PerfectRx prints it: use Windows-1252 characters, without &lt; or &gt;. Line 1 and line 2 together: 70 characters or fewer.
     /// </summary>
     [JsonPropertyName("address")]
     public UpdatePracticesRequestAddress? Address { get; set; }
@@ -37,7 +37,7 @@ public record UpdatePracticesRequest
     public bool? LiveEnabled { get; set; }
 
     /// <summary>
-    /// Text with at least one visible character.
+    /// The practice name. PerfectRx prints it: use Windows-1252 characters, without &lt; or &gt;.
     /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; set; }

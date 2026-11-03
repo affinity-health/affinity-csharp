@@ -12,13 +12,13 @@ public record UpdatePracticesRequestAddress : IJsonOnDeserialized
         new Dictionary<string, JsonElement>();
 
     /// <summary>
-    /// The street address.
+    /// The street address. Line 1 and line 2 together: 70 characters or fewer.
     /// </summary>
     [JsonPropertyName("line1")]
     public string? Line1 { get; set; }
 
     /// <summary>
-    /// The apartment or suite. Send null or empty text to remove it. An omitted `line2` keeps the saved suite, also when `line1` changes.
+    /// The apartment or suite. Send null, empty text, N/A, NA, none or - to remove it. See notes, TBD and unknown return 422. An omitted `line2` keeps the saved suite, also when `line1` changes.
     /// </summary>
     [JsonPropertyName("line2")]
     public string? Line2 { get; set; }
@@ -30,7 +30,7 @@ public record UpdatePracticesRequestAddress : IJsonOnDeserialized
     public string? City { get; set; }
 
     /// <summary>
-    /// The two-letter US state or territory code, such as TX, in any letter case. Affinity stores and returns it in upper case.
+    /// The two-letter code of a US state, DC or PR, in any letter case. Affinity stores and returns it in upper case.
     /// </summary>
     [JsonPropertyName("state")]
     public string? State { get; set; }

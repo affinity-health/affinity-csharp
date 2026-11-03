@@ -92,7 +92,7 @@ public record GetMedicationsResponse : IJsonOnDeserialized, IJsonOnSerializing
     public IEnumerable<string> Requirements { get; set; } = new List<string>();
 
     /// <summary>
-    /// The states where this medication cannot ship; other states are permitted subject to pharmacy coverage.
+    /// Every state where this medication cannot ship, including states the pharmacy does not cover. It can ship to every other state.
     /// </summary>
     [JsonPropertyName("restrictedStates")]
     public IEnumerable<string> RestrictedStates { get; set; } = new List<string>();

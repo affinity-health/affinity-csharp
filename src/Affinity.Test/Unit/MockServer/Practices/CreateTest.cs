@@ -65,7 +65,7 @@ public class CreateTest : BaseMockServerTest
             {
                 IdempotencyKey = "idempotencyKey",
                 ExternalId = null,
-                Address = new AddressInput
+                Address = new PracticeAddressInput
                 {
                     Line1 = "line1",
                     Line2 = null,
@@ -136,7 +136,7 @@ public class CreateTest : BaseMockServerTest
             new CreatePracticesRequest
             {
                 IdempotencyKey = "Idempotency-Key",
-                Address = new AddressInput
+                Address = new PracticeAddressInput
                 {
                     Line1 = "line1",
                     City = "city",

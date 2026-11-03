@@ -19,13 +19,13 @@ public record CreatePracticesRequest
     public string? ExternalId { get; set; }
 
     [JsonPropertyName("address")]
-    public required AddressInput Address { get; set; }
+    public required PracticeAddressInput Address { get; set; }
 
     [JsonPropertyName("liveEnabled")]
     public bool? LiveEnabled { get; set; }
 
     /// <summary>
-    /// Text with at least one visible character.
+    /// The practice name. PerfectRx prints it: use Windows-1252 characters, without &lt; or &gt;.
     /// </summary>
     [JsonPropertyName("name")]
     public required string Name { get; set; }
